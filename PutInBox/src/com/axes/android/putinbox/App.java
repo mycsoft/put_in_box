@@ -8,10 +8,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 
 public class App extends Application {
 	
-	Dao dao;
+	public Dao dao;
 	
 	@Override
 	public void onCreate() {
@@ -25,13 +26,35 @@ public class App extends Application {
 		
 	}
 
-	public void saveItem(Map map) {
-		dao.saveItem(map);
-		
-	}
+//	@Deprecated
+//	public void saveItem(Map map) {
+//		dao.saveItem(map);
+//		
+//	}
 	
 	public static App getApp(Activity act){
 		return (App)act.getApplication();
+	}
+	
+	
+	/**
+	 * 打开一个可写数据库.
+	 * @param act
+	 * @return
+	 */
+	public static SQLiteDatabase openWritableDB(Activity act) {
+		App app = getApp(act);
+		return app.dao.getWritableDatabase();
+	}
+	
+	/**
+	 * 打开一个只读数据库.
+	 * @param act
+	 * @return
+	 */
+	public static SQLiteDatabase openReadableDB(Activity act) {
+		App app = getApp(act);
+		return app.dao.getReadableDatabase();
 	}
 
 }

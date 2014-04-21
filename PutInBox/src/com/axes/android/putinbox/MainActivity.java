@@ -1,12 +1,18 @@
 package com.axes.android.putinbox;
 
+import com.axes.android.putinbox.dao.Box;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-
+/**
+ * ������.
+ * @author MaYichao
+ *
+ */
 public class MainActivity extends Activity {
 	
 //	private Button addBtn;
@@ -36,7 +42,7 @@ public class MainActivity extends Activity {
     protected void onResume() {
     	// TODO Auto-generated method stub
     	super.onResume();
-    	Cursor c = App.getApp(this).dao.queryAllBox();
+    	Cursor c = Box.queryAllBox(App.openReadableDB(this));
     	listView.setAdapter(
     			new android.support.v4.widget.SimpleCursorAdapter(this,R.layout.box_list_item, c, new String[]{"name"}, new int[]{R.id.name},0)
     			
