@@ -39,6 +39,7 @@ public class EditActivity extends Activity {
 			// map.put("name", nameTxt.getText().toString());
 			Box box = new Box();
 			box.setName(nameTxt.getText().toString());
+			box.setDescription(descTxt.getText().toString());
 			SQLiteDatabase db = App.openWritableDB(this);
 			try {
 				box.save(db);
