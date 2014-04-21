@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
     	super.onResume();
     	Cursor c = Box.queryAllBox(App.openReadableDB(this));
     	listView.setAdapter(
-    			new android.support.v4.widget.SimpleCursorAdapter(this,R.layout.box_list_item, c, new String[]{"name"}, new int[]{R.id.name},0)
+    			new android.support.v4.widget.SimpleCursorAdapter(this,R.layout.box_list_item, c, new String[]{"name","_id","description"}, new int[]{R.id.name,R.id.id,R.id.desc},0)
     			
     			);
     }
