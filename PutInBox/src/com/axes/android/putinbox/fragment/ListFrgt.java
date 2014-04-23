@@ -3,6 +3,7 @@
  */
 package com.axes.android.putinbox.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 
 import com.axes.android.putinbox.App;
 import com.axes.android.putinbox.R;
+import com.axes.android.putinbox.ViewActivity;
 import com.axes.android.putinbox.dao.Box;
 
 /**
@@ -29,6 +31,7 @@ public class ListFrgt extends ListFragment {
 
 	// private Button addBtn;
 	private ListView listView;
+	public Integer parentBoxId;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +74,14 @@ public class ListFrgt extends ListFragment {
 			return super.onOptionsItemSelected(item);
 
 		}
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		//点击行,显示Box细节画面.
+		Intent i = new Intent(getActivity(), ViewActivity.class);
+		i.putExtra("id", (int)id);
+		startActivity(i);
 	}
 
 }
