@@ -3,6 +3,7 @@
  */
 package com.axes.android.putinbox.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -24,16 +25,21 @@ public class Box {
 	private String description;
 	private Box parent;
 	private List<Box> children;
-	
+	private Date createDate;
+
+	private Date modifyDate;
+
 	public Box() {
-		
+
 	}
 
 	private Box(Cursor c) {
 		id = c.getLong(c.getColumnIndex("_id"));
 		name = c.getString(c.getColumnIndex("name"));
 		description = c.getString(c.getColumnIndex("description"));
-		
+		createDate = new Date(c.getLong(c.getColumnIndex("create_date")));
+		modifyDate = new Date(c.getLong(c.getColumnIndex("modify_date")));
+
 	}
 
 	public Long getId() {
@@ -76,6 +82,22 @@ public class Box {
 		this.children = children;
 	}
 
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
 	public long save(SQLiteDatabase db) {
 		if (id != null) {
 			assert id != null;
@@ -91,10 +113,14 @@ public class Box {
 		try {
 			// db.execSQL(sql, new Object[] { id, name,description,parent ==
 			// null ? null : parent.id});
+			createDate = new Date();
+			modifyDate = new Date();
 			ContentValues cv = new ContentValues();
 			cv.put("name", name);
 			cv.put("description", description);
 			cv.put("parent", parent == null ? null : parent.id);
+			cv.put("create_date", createDate.getTime());
+			cv.put("modify_date", modifyDate.getTime());
 
 			long id = db.insert("box", "", cv);
 			db.setTransactionSuccessful();
@@ -106,7 +132,7 @@ public class Box {
 	}
 
 	public static void createTable(SQLiteDatabase db) {
-		String sql = "create table box(_id Integer PRIMARY KEY AUTOINCREMENT,`name` text,description text,parent INTEGER)";
+		String sql = "create table box(_id Integer PRIMARY KEY AUTOINCREMENT,`name` text,description text,parent INTEGER,create_date Long,modify_date Long)";
 		db.execSQL(sql);
 	}
 
