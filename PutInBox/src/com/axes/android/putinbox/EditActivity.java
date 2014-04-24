@@ -56,7 +56,7 @@ public class EditActivity extends ActionBarActivity {
 			// ((App)getApplication()).saveItem(map);
 			finish();
 			return false;
-			
+
 		case android.R.id.home:
 			finish();
 			return false;
