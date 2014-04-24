@@ -1,14 +1,15 @@
 package com.axes.android.putinbox;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.widget.Toast;
 /**
  * 主应用画面.
  * @author MaYichao
  *
  */
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends ActionBarActivity{
 	
 //	private Button addBtn;
 //	private ListView listView;
@@ -33,7 +34,7 @@ public class MainActivity extends FragmentActivity{
         
 //        listView = (ListView)findViewById(R.id.listView);
         
-        
+//        getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
     
 //    @Override
@@ -48,12 +49,17 @@ public class MainActivity extends FragmentActivity{
 //    }
 //
 //
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
+//    	for ( Fragment frag :getSupportFragmentManager().getFragments()){
+//    		if(frag.hasOptionsMenu()){
+//    			frag.onCreateOptionsMenu(menu, getMenuInflater());
+//    		}
+//    	}
+        return true;
+    }
 //    
 //    @Override
 //    public boolean onMenuItemSelected(int featureId, MenuItem item) {
