@@ -2,16 +2,18 @@ package com.axes.android.putinbox;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ListView;
+import android.widget.Toast;
 /**
  * 主应用画面.
  * @author MaYichao
  *
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity{
 	
 //	private Button addBtn;
-	private ListView listView;
+//	private ListView listView;
+	/** 最后一次按下Back键的时间 */
+	private long last_back = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class MainActivity extends FragmentActivity {
 //		});
         
 //        listView = (ListView)findViewById(R.id.listView);
+        
         
     }
     
@@ -63,5 +66,16 @@ public class MainActivity extends FragmentActivity {
 //    		
 //    	}
 //    }
+    
+    @Override
+    	public void onBackPressed() {
+    	long t = System.currentTimeMillis();
+    		if(t - last_back < 2000){
+    			System.exit(0);
+    		}else{
+    			last_back = t;
+    			Toast.makeText(this, "再次点击退出!", Toast.LENGTH_SHORT).show();
+    		}
+    	}
     
 }
