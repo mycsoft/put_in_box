@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.axes.android.putinbox.dao.Box;
@@ -29,6 +30,8 @@ public class EditActivity extends ActionBarActivity {
 		descTxt = (EditText) findViewById(R.id.desc);
 		actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		// actionBar.setDisplayShowCustomEnabled(true);
+
 	}
 
 	@Override
@@ -42,19 +45,7 @@ public class EditActivity extends ActionBarActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.save:
-			// Map map = new HashMap();
-			// map.put("name", nameTxt.getText().toString());
-			Box box = new Box();
-			box.setName(nameTxt.getText().toString());
-			box.setDescription(descTxt.getText().toString());
-			SQLiteDatabase db = App.openWritableDB(this);
-			try {
-				box.save(db);
-			} finally {
-				db.close();
-			}
-			// ((App)getApplication()).saveItem(map);
-			finish();
+			save();
 			return false;
 
 		case android.R.id.home:
@@ -64,6 +55,26 @@ public class EditActivity extends ActionBarActivity {
 			return super.onOptionsItemSelected(item);
 
 		}
+	}
+	
+	public void save(View v) {
+		save();
+	}
+
+	private void save() {
+		// Map map = new HashMap();
+		// map.put("name", nameTxt.getText().toString());
+		Box box = new Box();
+		box.setName(nameTxt.getText().toString());
+		box.setDescription(descTxt.getText().toString());
+		SQLiteDatabase db = App.openWritableDB(this);
+		try {
+			box.save(db);
+		} finally {
+			db.close();
+		}
+		// ((App)getApplication()).saveItem(map);
+		finish();
 	}
 
 }
