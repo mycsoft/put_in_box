@@ -46,6 +46,7 @@ public class ListFrgt extends ListFragment {
 	public void onStart() {
 		super.onStart();
 		setHasOptionsMenu(true);
+//		setMenuVisibility(true);
 		Cursor c = Box.queryAllBox(App.openReadableDB(getActivity()));
 		
 //		listView.setAdapter(
