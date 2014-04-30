@@ -8,6 +8,14 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <application
         android:name="com.axes.android.putinbox.App"
         android:allowBackup="true"

@@ -24,6 +24,7 @@ public class Box {
 	private String name;
 	private String description;
 	private Box parent;
+	private String photoPath;
 	private List<Box> children;
 	private Date createDate;
 
@@ -39,6 +40,7 @@ public class Box {
 		description = c.getString(c.getColumnIndex("description"));
 		createDate = new Date(c.getLong(c.getColumnIndex("create_date")));
 		modifyDate = new Date(c.getLong(c.getColumnIndex("modify_date")));
+		photoPath = c.getString(c.getColumnIndex("photo_path"));
 
 	}
 
@@ -118,6 +120,7 @@ public class Box {
 			ContentValues cv = new ContentValues();
 			cv.put("name", name);
 			cv.put("description", description);
+			cv.put("photo_path", photoPath);
 			cv.put("parent", parent == null ? null : parent.id);
 			cv.put("create_date", createDate.getTime());
 			cv.put("modify_date", modifyDate.getTime());
@@ -132,7 +135,7 @@ public class Box {
 	}
 
 	public static void createTable(SQLiteDatabase db) {
-		String sql = "create table box(_id Integer PRIMARY KEY AUTOINCREMENT,`name` text,description text,parent INTEGER,create_date Long,modify_date Long)";
+		String sql = "create table box(_id Integer PRIMARY KEY AUTOINCREMENT,`name` text,description text,parent INTEGER,photo_path text,create_date Long,modify_date Long)";
 		db.execSQL(sql);
 	}
 
@@ -155,6 +158,14 @@ public class Box {
 		Box box = new Box(c);
 		c.close();
 		return box;
+	}
+
+	public String getPhotoPath() {
+		return photoPath;
+	}
+
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
 	}
 
 }
