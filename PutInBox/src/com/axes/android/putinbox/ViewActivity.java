@@ -1,5 +1,10 @@
 package com.axes.android.putinbox;
 
+import java.io.File;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.axes.android.putinbox.dao.Box;
@@ -74,6 +80,7 @@ public class ViewActivity extends ActionBarActivity {
 		
 		private TextView nameTxt;
 		private TextView descTxt;
+		private ImageView imageView;
 
 		public int getBoxId() {
 			return boxId;
@@ -93,6 +100,7 @@ public class ViewActivity extends ActionBarActivity {
 					false);
 			nameTxt = (TextView)rootView.findViewById(R.id.name);
 			descTxt = (TextView)rootView.findViewById(R.id.desc);
+			imageView = (ImageView)rootView.findViewById(R.id.photoView);
 			return rootView;
 		}
 
@@ -132,6 +140,13 @@ public class ViewActivity extends ActionBarActivity {
 				nameTxt.setText(box.getName());
 				descTxt.setText(box.getDescription());
 				getActivity().setTitle(box.getName());
+				
+				if(box.getPhotoPath() != null){
+					//显示图片
+//					Bitmap img = BitmapFactory.decodeFile(box.getPhotoPath());
+					imageView.setImageURI(Uri.fromFile(new File(box.getPhotoPath())));
+					
+				}
 			}
 
 		}
