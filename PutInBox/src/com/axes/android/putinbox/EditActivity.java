@@ -1,25 +1,18 @@
 package com.axes.android.putinbox;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.axes.android.putinbox.dao.Box;
+import com.axes.android.putinbox.task.LoadImageTask;
 
 /**
  * 编辑画面.
@@ -41,6 +35,8 @@ public class EditActivity extends ActionBarActivity {
 	private ImageView photoView;
 	private ActionBar actionBar;
 	private Box box;
+
+	private LoadImageTask loadImageTask;
 	/**
 	 * 临时照片文件.
 	 */
@@ -108,7 +104,7 @@ public class EditActivity extends ActionBarActivity {
 		// Map map = new HashMap();
 		// map.put("name", nameTxt.getText().toString());
 		// Box box = new Box();
-		if(box == null){
+		if (box == null) {
 			box = new Box();
 		}
 		box.setName(nameTxt.getText().toString());
@@ -169,36 +165,21 @@ public class EditActivity extends ActionBarActivity {
 	 */
 	private void photo() {
 		dispatchTakePictureIntent();
+		// dispatchTakePictureSmallIntent();
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//			Bundle extras = data.getExtras();
-			//替换照片文件
+			// 替换照片文件
 			photoFile = tempPhotoFile;
-			
-//			Bitmap imageBitmap = (Bitmap) extras.get("data");
-//			try {
-//				Bitmap imageBitmap;
-////				imageBitmap = BitmapFactory.decodeStream(new FileInputStream(photoFile));
-//				imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-//				// 设置略缩图.
-//				photoView.setImageBitmap(imageBitmap);
-//				try {
-//					photoFile = createImageFile();
-//					imageBitmap.compress(CompressFormat.JPEG, 90, new FileOutputStream(photoFile));
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//					Log.e("photo", "save photo failed", e);
-//				}
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//			imageBitmap.
-			
-			photoView.setImageURI(Uri.fromFile(photoFile));
+			if (loadImageTask != null) {
+				loadImageTask.cancel(true);
+			}
+			loadImageTask = new LoadImageTask(photoView);
+
+			loadImageTask.execute(photoFile.getAbsolutePath());
+
 		}
 	}
 
@@ -218,9 +199,10 @@ public class EditActivity extends ActionBarActivity {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 		String imageFileName = "JPEG_" + timeStamp + "_";
-		File storageDir = Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//		File storageDir = Environment.getExternalStorageDirectory();
+		// File storageDir = Environment
+		// .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		// File storageDir = Environment.getExternalStorageDirectory();
 		File image = File.createTempFile(imageFileName, /* prefix */
 				".jpg", /* suffix */
 				storageDir /* directory */
@@ -229,31 +211,6 @@ public class EditActivity extends ActionBarActivity {
 		// Save a file: path for use with ACTION_VIEW intents
 		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 		return image;
-	}
-
-	private void dispatchTakePictureSmallIntent() {
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-			// Ensure that there's a camera activity to handle the intent
-//			if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//				// Create the File where the photo should go
-//				File photoFile = null;
-//				try {
-//					photoFile = createImageFile();
-//				} catch (IOException ex) {
-//					// Error occurred while creating the File
-//					// ...
-//				}
-//				// Continue only if the File was successfully created
-//				if (photoFile != null) {
-//					takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-//							Uri.fromFile(photoFile));
-					startActivityForResult(takePictureIntent,
-							REQUEST_TAKE_PHOTO);
-//				}
-//			}
-		}
-
 	}
 
 }

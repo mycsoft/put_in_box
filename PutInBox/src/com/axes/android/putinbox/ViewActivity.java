@@ -1,10 +1,5 @@
 package com.axes.android.putinbox;
 
-import java.io.File;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.axes.android.putinbox.dao.Box;
+import com.axes.android.putinbox.task.LoadImageTask;
 
 /**
  * 查看Activity;
@@ -40,7 +36,7 @@ public class ViewActivity extends ActionBarActivity {
 					.add(R.id.container, f).commit();
 		}
 		ActionBar actionBar = getSupportActionBar();
-//		actionBar.setHomeButtonEnabled(true);
+		// actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 
@@ -61,14 +57,12 @@ public class ViewActivity extends ActionBarActivity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if(id == android.R.id.home){
+		if (id == android.R.id.home) {
 			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -77,10 +71,12 @@ public class ViewActivity extends ActionBarActivity {
 
 		private Box box;
 		private int boxId = -1;
-		
+
 		private TextView nameTxt;
 		private TextView descTxt;
 		private ImageView imageView;
+
+		private LoadImageTask loadImageTask;
 
 		public int getBoxId() {
 			return boxId;
@@ -98,9 +94,9 @@ public class ViewActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_view, container,
 					false);
-			nameTxt = (TextView)rootView.findViewById(R.id.name);
-			descTxt = (TextView)rootView.findViewById(R.id.desc);
-			imageView = (ImageView)rootView.findViewById(R.id.photoView);
+			nameTxt = (TextView) rootView.findViewById(R.id.name);
+			descTxt = (TextView) rootView.findViewById(R.id.desc);
+			imageView = (ImageView) rootView.findViewById(R.id.photoView);
 			return rootView;
 		}
 
@@ -112,15 +108,30 @@ public class ViewActivity extends ActionBarActivity {
 
 			// assert id < 0;
 			if (box == null) {
-				//当信息没有加载时
+				// 当信息没有加载时
 				new LoadTask().execute(boxId);
 			}
 		}
 
 		/**
+		 * 装载图片.
+		 * 
+		 * @param path
+		 */
+		private void loadImage(String path) {
+			if (loadImageTask != null) {
+				loadImageTask.cancel(true);
+				loadImageTask = null;
+			}
+			loadImageTask = new LoadImageTask(imageView);
+			loadImageTask.execute(path);
+		}
+
+		/**
 		 * 加载信息任务.
+		 * 
 		 * @author MaYichao
-		 *
+		 * 
 		 */
 		private class LoadTask extends AsyncTask<Integer, Integer, Box> {
 
@@ -140,12 +151,15 @@ public class ViewActivity extends ActionBarActivity {
 				nameTxt.setText(box.getName());
 				descTxt.setText(box.getDescription());
 				getActivity().setTitle(box.getName());
-				
-				if(box.getPhotoPath() != null){
-					//显示图片
-//					Bitmap img = BitmapFactory.decodeFile(box.getPhotoPath());
-					imageView.setImageURI(Uri.fromFile(new File(box.getPhotoPath())));
-					
+
+				if (box.getPhotoPath() != null) {
+					// 显示图片
+					// Bitmap img =
+					// BitmapFactory.decodeFile(box.getPhotoPath());
+					// imageView.setImageURI(Uri.fromFile(new
+					// File(box.getPhotoPath())));
+					loadImage(box.getPhotoPath());
+
 				}
 			}
 
