@@ -11,11 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent" >
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/abc_tab_selected_focused_holo" />
+
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/imageView"
             android:text="Name"
             android:textSize="18sp" />
 
