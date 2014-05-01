@@ -1,10 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mytest="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/add"
         android:icon="@drawable/content_new"
-        android:orderInCategory="1"
-        android:showAsAction="ifRoom"
+        mytest:showAsAction="always"
         android:title="Add">
     </item>
 <!--   -->
