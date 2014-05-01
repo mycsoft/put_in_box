@@ -1,5 +1,8 @@
 package com.axes.android.putinbox;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.axes.android.putinbox.dao.Box;
 import com.axes.android.putinbox.task.LoadImageTask;
@@ -105,11 +109,23 @@ public class ViewActivity extends ActionBarActivity {
 			super.onStart();
 			// int id = getActivity().getIntent().getIntExtra("id", -1);
 			// 启动后台任务,取得Box信息,并显示画面.
-
+			setHasOptionsMenu(true);
 			// assert id < 0;
 			if (box == null) {
 				// 当信息没有加载时
 				new LoadTask().execute(boxId);
+			}
+		}
+
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.action_delete:
+				clickDelete(item);
+				return true;
+
+			default:
+				return super.onOptionsItemSelected(item);
 			}
 		}
 
@@ -125,6 +141,53 @@ public class ViewActivity extends ActionBarActivity {
 			}
 			loadImageTask = new LoadImageTask(imageView);
 			loadImageTask.execute(path);
+		}
+
+		/**
+		 * 删除对象.
+		 * 
+		 * @param item
+		 */
+		public void clickDelete(MenuItem item) {
+			new AlertDialog.Builder(getActivity()).setCancelable(true)
+			.setMessage("确认要删除\"" + box.getName() + "\"吗?")
+			.setPositiveButton(android.R.string.yes, new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//确认删除
+					new AsyncTask<Long, Void, String>() {
+						
+						@Override
+						protected String doInBackground(Long... params) {
+							box.delete(App.getApp(getActivity()).dao
+									.getWritableDatabase());
+							return null;
+						}
+						
+						@Override
+						protected void onPostExecute(String result) {
+							if (result == null) {
+								Toast.makeText(getActivity(), "删除成功!",
+										Toast.LENGTH_SHORT).show();
+								getActivity().finish();
+							}
+						}
+						
+					}.execute();
+					
+				}
+			})
+			.setNegativeButton(android.R.string.no, new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//取消删除.
+					dialog.cancel();
+					
+				}
+			}).show();
+
 		}
 
 		/**

@@ -168,4 +168,30 @@ public class Box {
 		this.photoPath = photoPath;
 	}
 
+	/**
+	 * 删除自身对象.
+	 * @param db
+	 */
+	public void delete(SQLiteDatabase db) {
+		if(id == null){
+			//未保存对象不处理.
+			return;
+		}
+		db.beginTransaction();
+		try{
+		//删除本向对象.
+		db.delete("box", "_id = ? ", new String[]{id.toString()});
+		//将下级对象都放到根级.
+		ContentValues cv = new ContentValues();
+		cv.put("parent", (Long)null);
+		db.update("box", cv, "parent = ?", new String[]{id.toString()});
+		db.setTransactionSuccessful();
+		}finally{
+			db.endTransaction();
+		}
+		
+		
+		
+	}
+
 }
