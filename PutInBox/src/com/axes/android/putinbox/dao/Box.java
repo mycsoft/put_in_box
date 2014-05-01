@@ -7,10 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.FragmentActivity;
 
 /**
  * 一个容器对象.任何对象都可能是个容器. 本对象是系统中的基本类型.
@@ -20,7 +18,7 @@ import android.support.v4.app.FragmentActivity;
  */
 public class Box {
 
-	private Long id;
+	private Integer id;
 	private String name;
 	private String description;
 	private Box parent;
@@ -35,7 +33,7 @@ public class Box {
 	}
 
 	private Box(Cursor c) {
-		id = c.getLong(c.getColumnIndex("_id"));
+		id = c.getInt(c.getColumnIndex("_id"));
 		name = c.getString(c.getColumnIndex("name"));
 		description = c.getString(c.getColumnIndex("description"));
 		createDate = new Date(c.getLong(c.getColumnIndex("create_date")));
@@ -44,11 +42,11 @@ public class Box {
 
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -170,28 +168,39 @@ public class Box {
 
 	/**
 	 * 删除自身对象.
+	 * 
 	 * @param db
 	 */
 	public void delete(SQLiteDatabase db) {
-		if(id == null){
-			//未保存对象不处理.
+		if (id == null) {
+			// 未保存对象不处理.
 			return;
 		}
 		db.beginTransaction();
-		try{
-		//删除本向对象.
-		db.delete("box", "_id = ? ", new String[]{id.toString()});
-		//将下级对象都放到根级.
-		ContentValues cv = new ContentValues();
-		cv.put("parent", (Long)null);
-		db.update("box", cv, "parent = ?", new String[]{id.toString()});
-		db.setTransactionSuccessful();
-		}finally{
+		try {
+			// 删除本向对象.
+			db.delete("box", "_id = ? ", new String[] { id.toString() });
+			// 将下级对象都放到根级.
+			ContentValues cv = new ContentValues();
+			cv.put("parent", (Long) null);
+			db.update("box", cv, "parent = ?", new String[] { id.toString() });
+			db.setTransactionSuccessful();
+		} finally {
 			db.endTransaction();
 		}
-		
-		
-		
+
+	}
+
+	public static Cursor queryByParent(SQLiteDatabase db, Integer parentId) {
+		assert parentId == null;
+		Cursor c;
+		// SQLiteDatabase db = getReadableDatabase();
+		c = db.query("box", null, "parent = ? ",
+				new String[] { parentId.toString() }, null, null, "_id desc");
+		// c = db.rawQuery("select _id,name from box", null);
+		// db.close();
+
+		return c;
 	}
 
 }

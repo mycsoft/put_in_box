@@ -35,6 +35,7 @@ public class EditActivity extends ActionBarActivity {
 	private ImageView photoView;
 	private ActionBar actionBar;
 	private Box box;
+	private Integer parentId;
 
 	private LoadImageTask loadImageTask;
 	/**
@@ -53,7 +54,16 @@ public class EditActivity extends ActionBarActivity {
 		nameTxt = (EditText) findViewById(R.id.name);
 		descTxt = (EditText) findViewById(R.id.desc);
 		photoView = (ImageView) findViewById(R.id.photoView);
-
+		Intent i = getIntent();
+		Integer id = i.getIntExtra("id", -1);
+		if (id > 0) {
+			// 编辑
+			box = new Box();
+			box.setId(id);
+		} else {
+			// 新增
+			parentId = i.getIntExtra("parent", -1);
+		}
 		// 拍照事件
 		photoView.setOnClickListener(new OnClickListener() {
 
@@ -68,6 +78,19 @@ public class EditActivity extends ActionBarActivity {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// actionBar.setDisplayShowCustomEnabled(true);
 
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		if (box != null) {
+			// 编辑
+		} else {
+			// 新增
+			// box = new Box();
+
+		}
 	}
 
 	@Override
@@ -111,6 +134,11 @@ public class EditActivity extends ActionBarActivity {
 		box.setDescription(descTxt.getText().toString());
 		box.setPhotoPath(photoFile == null ? null : photoFile.getAbsolutePath());
 		SQLiteDatabase db = App.openWritableDB(this);
+		if (parentId > 0) {
+			// 有父容器
+			Box parent = Box.loadById(db, parentId);
+			box.setParent(parent);
+		}
 		try {
 			if (box.getId() == null) {
 				// 保存新增

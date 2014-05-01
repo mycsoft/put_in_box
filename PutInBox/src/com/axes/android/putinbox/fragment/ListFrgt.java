@@ -49,7 +49,9 @@ public class ListFrgt extends ListFragment {
 		super.onStart();
 		setHasOptionsMenu(true);
 		// setMenuVisibility(true);
-		Cursor c = Box.queryAllBox(App.openReadableDB(getActivity()));
+		Cursor c = parentBoxId == null ? Box.queryAllBox(App
+				.openReadableDB(getActivity())) : Box.queryByParent(
+				App.openReadableDB(getActivity()), parentBoxId);
 
 		// listView.setAdapter(
 		setListAdapter(new SimpleCursorAdapter(getActivity(),
@@ -58,36 +60,36 @@ public class ListFrgt extends ListFragment {
 						R.id.desc }, 0) {
 			public View getView(int arg0, View arg1, ViewGroup arg2) {
 				View v = super.getView(arg0, arg1, arg2);
-				 // 显示图片.
-				 // String path =
-				 // ((String)((Map)getItem(arg0)).get("photo_path"));
-				 String path = ((Cursor) getItem(arg0)).getString(4);
-				 if (path != null) {
-				//
-				// File file = new File(path);
-				// if (file.exists()) {
-				ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
-				new LoadImageTask(imgV).execute(path);
-				//
-				// // imgV.setImageURI(Uri.fromFile(new File(path)));
-				//
-				// // 缩小显示
-				// Options opts = new Options();
-				// // 先取得图片的大小.
-				// opts.inJustDecodeBounds = true;
-				// BitmapFactory.decodeFile(path, opts);
-				//
-				// // 计算缩放比例.
-				// opts.inSampleSize = Math.min(imgV.getWidth()
-				// / opts.outWidth, imgV.getHeight()
-				// / opts.outHeight);
-				// opts.inJustDecodeBounds = false;
-				// opts.inPurgeable = true;
-				// Bitmap bmp = BitmapFactory.decodeFile(path, opts);
-				// imgV.setImageBitmap(bmp);
-				// bmp.recycle();
-				// }
-				 }
+				// 显示图片.
+				// String path =
+				// ((String)((Map)getItem(arg0)).get("photo_path"));
+				String path = ((Cursor) getItem(arg0)).getString(4);
+				if (path != null) {
+					//
+					// File file = new File(path);
+					// if (file.exists()) {
+					ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
+					new LoadImageTask(imgV).execute(path);
+					//
+					// // imgV.setImageURI(Uri.fromFile(new File(path)));
+					//
+					// // 缩小显示
+					// Options opts = new Options();
+					// // 先取得图片的大小.
+					// opts.inJustDecodeBounds = true;
+					// BitmapFactory.decodeFile(path, opts);
+					//
+					// // 计算缩放比例.
+					// opts.inSampleSize = Math.min(imgV.getWidth()
+					// / opts.outWidth, imgV.getHeight()
+					// / opts.outHeight);
+					// opts.inJustDecodeBounds = false;
+					// opts.inPurgeable = true;
+					// Bitmap bmp = BitmapFactory.decodeFile(path, opts);
+					// imgV.setImageBitmap(bmp);
+					// bmp.recycle();
+					// }
+				}
 				return v;
 			};
 		}
@@ -104,7 +106,7 @@ public class ListFrgt extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.add) {
 			App app = (App) getActivity().getApplication();
-			app.startAddView();
+			app.startAddView(parentBoxId);
 			return false;
 		} else {
 			return super.onOptionsItemSelected(item);

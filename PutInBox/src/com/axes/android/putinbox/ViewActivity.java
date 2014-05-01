@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.axes.android.putinbox.dao.Box;
+import com.axes.android.putinbox.fragment.ListFrgt;
 import com.axes.android.putinbox.task.LoadImageTask;
 
 /**
@@ -79,6 +80,8 @@ public class ViewActivity extends ActionBarActivity {
 		private TextView nameTxt;
 		private TextView descTxt;
 		private ImageView imageView;
+		
+		private ListFrgt listFrgt;
 
 		private LoadImageTask loadImageTask;
 
@@ -101,6 +104,8 @@ public class ViewActivity extends ActionBarActivity {
 			nameTxt = (TextView) rootView.findViewById(R.id.name);
 			descTxt = (TextView) rootView.findViewById(R.id.desc);
 			imageView = (ImageView) rootView.findViewById(R.id.photoView);
+			listFrgt = (ListFrgt)getFragmentManager().findFragmentById(R.id.fragment1);
+//			listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
 			return rootView;
 		}
 
@@ -110,6 +115,7 @@ public class ViewActivity extends ActionBarActivity {
 			// int id = getActivity().getIntent().getIntExtra("id", -1);
 			// 启动后台任务,取得Box信息,并显示画面.
 			setHasOptionsMenu(true);
+			listFrgt.parentBoxId = boxId;
 			// assert id < 0;
 			if (box == null) {
 				// 当信息没有加载时
