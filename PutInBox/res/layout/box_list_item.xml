@@ -1,56 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:minHeight="48dp"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="4dp"
     android:paddingLeft="8dp"
-    android:paddingRight="8dp" >
+    android:paddingRight="8dp"
+    android:paddingTop="4dp"
+    tools:context=".fragment.ListFrgt" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:showDividers="none" >
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/list_row_height"
+            android:layout_height="@dimen/list_row_height"
             android:scaleType="fitXY"
             android:src="@drawable/abc_tab_selected_focused_holo" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/imageView"
-            android:text="Name"
-            android:textSize="18sp" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/list_row_height"
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp" >
 
-        <TextView
-            android:id="@+id/id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/name"
-            android:layout_alignBottom="@+id/name"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_toRightOf="@+id/name"
-            android:text="id"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="16sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp" >
 
-        <TextView
-            android:id="@+id/desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/id"
-            android:text="说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容"
-            android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/textColor"
+                    android:text="Name"
+                    android:textSize="18sp" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/name"
+                    android:layout_alignBottom="@+id/name"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/name"
+                    android:textColor="@color/textColor"
+                    android:text="id"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:text="说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

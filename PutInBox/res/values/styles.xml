@@ -13,7 +13,11 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="CardTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="CardTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
