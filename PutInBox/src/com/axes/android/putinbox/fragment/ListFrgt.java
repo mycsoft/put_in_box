@@ -5,6 +5,8 @@ package com.axes.android.putinbox.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -41,13 +43,17 @@ public class ListFrgt extends ListFragment {
 		// View v = inflater.inflate(R.layout.activity_main, null);
 		// listView = (ListView) v.findViewById(R.id.listView);
 		// return v;
-		return super.onCreateView(inflater, container, savedInstanceState);
+		View root = super.onCreateView(inflater, container, savedInstanceState);
+//		// 隐藏分隔线.
+//		getListView().setFooterDividersEnabled(false);
+		return root;
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
 		setHasOptionsMenu(true);
+
 		// setMenuVisibility(true);
 		Cursor c = parentBoxId == null ? Box.queryAllBox(App
 				.openReadableDB(getActivity())) : Box.queryByParent(
@@ -72,6 +78,17 @@ public class ListFrgt extends ListFragment {
 		}
 
 		);
+
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		// 隐藏分隔线.
+		getListView().setFooterDividersEnabled(false);
+		getListView().setDivider(new ColorDrawable(Color.BLUE));
 	}
 
 	@Override
