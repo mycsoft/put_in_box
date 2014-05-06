@@ -147,6 +147,20 @@ public class Box {
 		return c;
 	}
 
+	/**
+	 * 查询根级列表.
+	 * 
+	 * @param db
+	 * @return
+	 */
+	public static Cursor queryTopList(SQLiteDatabase db) {
+		Cursor c;
+		// SQLiteDatabase db = getReadableDatabase();
+		c = queryByParent(db, null);
+
+		return c;
+	}
+
 	public static Box loadById(SQLiteDatabase db, Integer id) {
 		Cursor c = db.query("box", null, "_id = ? ",
 				new String[] { id.toString() }, null, null, null);
@@ -192,14 +206,42 @@ public class Box {
 	}
 
 	public static Cursor queryByParent(SQLiteDatabase db, Integer parentId) {
-		assert parentId == null;
+		// assert parentId == null;
 		Cursor c;
 		// SQLiteDatabase db = getReadableDatabase();
-		c = db.query("box", null, "parent = ? ",
-				new String[] { parentId.toString() }, null, null, "_id desc");
-		// c = db.rawQuery("select _id,name from box", null);
-		// db.close();
+		if (parentId != null) {
+			c = db.query("box", null, "parent = ? ",
+					new String[] { parentId.toString() }, null, null,
+					"_id desc");
+			// c = db.rawQuery("select _id,name from box", null);
+			// db.close();
+		} else {
+			c = db.query("box", null, "parent is null ", null, null, null,
+					"_id desc");
+		}
 
+		return c;
+	}
+
+	/**
+	 * 查询所有子对象的总数量.
+	 * 
+	 * @param db
+	 * @return
+	 */
+
+	public int getAllChildrenCount(SQLiteDatabase db) {
+		int c = 0;
+		Cursor cursor = queryByParent(db, id);
+		c += cursor.getCount();
+		if (cursor.moveToFirst()) {
+			// 遍历子级.
+			do {
+				Box b = new Box(cursor);
+				c += b.getAllChildrenCount(db);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
 		return c;
 	}
 

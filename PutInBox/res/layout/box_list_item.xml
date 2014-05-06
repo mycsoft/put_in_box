@@ -58,6 +58,21 @@
                     android:text="id"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/name"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="8dp"
+                    android:background="#99cc00"
+                    android:padding="2dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp"
+                    android:visibility="invisible" />
+
             </RelativeLayout>
 
             <TextView

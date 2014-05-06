@@ -5,8 +5,10 @@ package com.axes.android.putinbox.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.axes.android.putinbox.App;
 import com.axes.android.putinbox.R;
@@ -55,7 +58,7 @@ public class ListFrgt extends ListFragment {
 		setHasOptionsMenu(true);
 
 		// setMenuVisibility(true);
-		Cursor c = parentBoxId == null ? Box.queryAllBox(App
+		Cursor c = parentBoxId == null ? Box.queryTopList(App
 				.openReadableDB(getActivity())) : Box.queryByParent(
 				App.openReadableDB(getActivity()), parentBoxId);
 
@@ -71,8 +74,32 @@ public class ListFrgt extends ListFragment {
 				if (path != null) {
 					ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
 					new LoadImageTask(imgV).execute(path);
-
+					
 				}
+				//计算容器内的物品总数.
+				final TextView countV = (TextView) v.findViewById(R.id.count);
+				new AsyncTask<Integer, Void, Integer>() {
+					
+					@Override
+					protected Integer doInBackground(Integer... params) {
+						Integer id = params[0];
+						SQLiteDatabase db = App.openReadableDB(getActivity());
+						Box box = Box.loadById(db, id);
+						
+						int count = box.getAllChildrenCount(db);
+						db.close();
+						return count;
+					}
+					
+					protected void onPostExecute(Integer result) {
+						if(result > 0){
+							countV.setText(result.toString());
+							countV.setVisibility(View.VISIBLE);								
+						}else{
+							countV.setVisibility(View.GONE);
+						}
+					};
+				}.execute(((Cursor) getItem(arg0)).getInt(0));
 				return v;
 			};
 		}
