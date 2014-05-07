@@ -36,19 +36,12 @@ import com.axes.android.putinbox.task.LoadImageTask;
  */
 public class ListFrgt extends ListFragment {
 
-	// private Button addBtn;
-	// private ListView listView;
 	public Integer parentBoxId;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// View v = inflater.inflate(R.layout.activity_main, null);
-		// listView = (ListView) v.findViewById(R.id.listView);
-		// return v;
 		View root = super.onCreateView(inflater, container, savedInstanceState);
-//		// 隐藏分隔线.
-//		getListView().setFooterDividersEnabled(false);
 		return root;
 	}
 
@@ -57,7 +50,14 @@ public class ListFrgt extends ListFragment {
 		super.onStart();
 		setHasOptionsMenu(true);
 
-		// setMenuVisibility(true);
+		updateData();
+	}
+
+	/**
+	 * 更新数据.
+	 */
+	protected void updateData() {
+
 		Cursor c = parentBoxId == null ? Box.queryTopList(App
 				.openReadableDB(getActivity())) : Box.queryByParent(
 				App.openReadableDB(getActivity()), parentBoxId);
@@ -74,28 +74,28 @@ public class ListFrgt extends ListFragment {
 				if (path != null) {
 					ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
 					new LoadImageTask(imgV).execute(path);
-					
+
 				}
-				//计算容器内的物品总数.
+				// 计算容器内的物品总数.
 				final TextView countV = (TextView) v.findViewById(R.id.count);
 				new AsyncTask<Integer, Void, Integer>() {
-					
+
 					@Override
 					protected Integer doInBackground(Integer... params) {
 						Integer id = params[0];
 						SQLiteDatabase db = App.openReadableDB(getActivity());
 						Box box = Box.loadById(db, id);
-						
+
 						int count = box.getAllChildrenCount(db);
 						db.close();
 						return count;
 					}
-					
+
 					protected void onPostExecute(Integer result) {
-						if(result > 0){
+						if (result > 0) {
 							countV.setText(result.toString());
-							countV.setVisibility(View.VISIBLE);								
-						}else{
+							countV.setVisibility(View.VISIBLE);
+						} else {
 							countV.setVisibility(View.GONE);
 						}
 					};
@@ -105,7 +105,6 @@ public class ListFrgt extends ListFragment {
 		}
 
 		);
-
 	}
 
 	@Override
