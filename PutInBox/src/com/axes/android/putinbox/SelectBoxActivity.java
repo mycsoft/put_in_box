@@ -136,7 +136,7 @@ public class SelectBoxActivity extends ActionBarActivity {
 			// 根
 			HashMap<String, Object> root = new HashMap<String, Object>();
 			root.put("name", "单独放");
-			root.put("id", HOME);
+			root.put("_id", HOME);
 			parentSpinnerList.add(root);
 			// 当前
 			if (parent == null) {
@@ -145,14 +145,14 @@ public class SelectBoxActivity extends ActionBarActivity {
 			} else {
 				HashMap<String, Object> p = new HashMap<String, Object>();
 				p.put("name", parent.getName());
-				p.put("id", parent.getId());
+				p.put("_id", parent.getId());
 				parentSpinnerList.add(p);
 
 			}
 			// 其它
 			HashMap<String, Object> other = new HashMap<String, Object>();
 			other.put("name", "其它位置");
-			other.put("id", OTHER);
+			other.put("_id", OTHER);
 			parentSpinnerList.add(other);
 
 			parentSpinner.setAdapter(new SimpleAdapter(getActivity(),
