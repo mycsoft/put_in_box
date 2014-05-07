@@ -245,4 +245,31 @@ public class Box {
 		return c;
 	}
 
+	public void update(SQLiteDatabase db) {
+		assert id == null;
+		
+		assert (parent != null && parent.id == null);
+
+		db.beginTransaction();
+		try {
+//			createDate = new Date();
+			modifyDate = new Date();
+			ContentValues cv = new ContentValues();
+			cv.put("name", name);
+			cv.put("description", description);
+			cv.put("photo_path", photoPath);
+			cv.put("parent", parent == null ? null : parent.id);
+//			cv.put("create_date", createDate.getTime());
+			cv.put("modify_date", modifyDate.getTime());
+
+			db.update("box", cv,"_id = ?",new String[]{String.valueOf(id)});
+			db.setTransactionSuccessful();
+			return;
+		} finally {
+			db.endTransaction();
+		}
+
+		
+	}
+
 }
