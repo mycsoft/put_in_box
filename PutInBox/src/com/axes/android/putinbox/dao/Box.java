@@ -24,6 +24,7 @@ public class Box {
 	private Box parent;
 	private String photoPath;
 	private List<Box> children;
+	private Integer parentId;
 	private Date createDate;
 
 	private Date modifyDate;
@@ -39,6 +40,7 @@ public class Box {
 		createDate = new Date(c.getLong(c.getColumnIndex("create_date")));
 		modifyDate = new Date(c.getLong(c.getColumnIndex("modify_date")));
 		photoPath = c.getString(c.getColumnIndex("photo_path"));
+		parentId = c.getInt(c.getColumnIndex("parent"));
 
 	}
 
@@ -70,8 +72,23 @@ public class Box {
 		return parent;
 	}
 
+	/**
+	 * 装载父级.
+	 * 
+	 * @param db
+	 */
+	public void loadParent(SQLiteDatabase db) {
+		if (parentId == null) {
+			parent = null;
+		} else {
+			parent = loadById(db, parentId);
+
+		}
+	}
+
 	public void setParent(Box parent) {
 		this.parent = parent;
+		parentId = parent == null ? null : parent.getId();
 	}
 
 	public List<Box> getChildren() {
@@ -119,7 +136,7 @@ public class Box {
 			cv.put("name", name);
 			cv.put("description", description);
 			cv.put("photo_path", photoPath);
-			cv.put("parent", parent == null ? null : parent.id);
+			cv.put("parent", parentId);
 			cv.put("create_date", createDate.getTime());
 			cv.put("modify_date", modifyDate.getTime());
 
@@ -247,29 +264,28 @@ public class Box {
 
 	public void update(SQLiteDatabase db) {
 		assert id == null;
-		
+
 		assert (parent != null && parent.id == null);
 
 		db.beginTransaction();
 		try {
-//			createDate = new Date();
+			// createDate = new Date();
 			modifyDate = new Date();
 			ContentValues cv = new ContentValues();
 			cv.put("name", name);
 			cv.put("description", description);
 			cv.put("photo_path", photoPath);
 			cv.put("parent", parent == null ? null : parent.id);
-//			cv.put("create_date", createDate.getTime());
+			// cv.put("create_date", createDate.getTime());
 			cv.put("modify_date", modifyDate.getTime());
 
-			db.update("box", cv,"_id = ?",new String[]{String.valueOf(id)});
+			db.update("box", cv, "_id = ?", new String[] { String.valueOf(id) });
 			db.setTransactionSuccessful();
 			return;
 		} finally {
 			db.endTransaction();
 		}
 
-		
 	}
 
 }

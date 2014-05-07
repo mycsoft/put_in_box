@@ -116,6 +116,7 @@ public class SelectBoxActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_select_box,
 					container, false);
 			setHasOptionsMenu(true);
+			box.loadParent(App.openReadableDB(getActivity()));
 			Box parent = box.getParent();
 
 			parentSpinner = (Spinner) rootView
@@ -170,7 +171,7 @@ public class SelectBoxActivity extends ActionBarActivity {
 								View view, int position, long id) {
 							Map<String, Object> map = (Map<String, Object>) parentSpinner
 									.getAdapter().getItem(position);
-							int selectId = (Integer) map.get("id");
+							int selectId = (Integer) map.get("_id");
 							if (selectId == OTHER) {
 								// 调出细节选择画面.
 								startActivityForResult(new Intent(
@@ -209,6 +210,7 @@ public class SelectBoxActivity extends ActionBarActivity {
 						Integer parentId = params[1];
 						SQLiteDatabase db = App.openReadableDB(getActivity());
 						Box box = Box.loadById(db, boxId);
+						box.loadParent(db);
 						Integer pId = box.getParent() != null ? box.getParent()
 								.getId() : null;
 						if (parentId == null ? pId != null : parentId

@@ -273,6 +273,7 @@ public class ViewActivity extends ActionBarActivity {
 			@Override
 			protected void onPostExecute(Box result) {
 				box = result;
+				
 				// 显示画面信息.
 				nameTxt.setText(box.getName());
 				descTxt.setText(box.getDescription());
