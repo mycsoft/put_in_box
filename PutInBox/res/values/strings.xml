@@ -3,10 +3,11 @@
 
     <string name="app_name">PutInBox</string>
     <string name="action_settings">Settings</string>
+    <string name="action_ok">确定</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_edit">新增</string>
     <string name="title_activity_view">物品详情</string>
-    <string name="title_activity_select_box">SelectBoxActivity</string>
-    <string name="title_activity_select_box_list">SelectBoxListActivity</string>
+    <string name="title_activity_select_box">移动到</string>
+    <string name="title_activity_select_box_list">容器选择列表</string>
 
 </resources>
