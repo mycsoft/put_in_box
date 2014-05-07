@@ -3,6 +3,7 @@ package com.axes.android.putinbox;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,14 +36,18 @@ public class ViewActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_view);
 
 		if (savedInstanceState == null) {
-			BoxViewFragment f = new BoxViewFragment();
-			f.setBoxId(getIntent().getIntExtra("id", -1));
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, f).commit();
+			showFragment();
 		}
 		ActionBar actionBar = getSupportActionBar();
 		// actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
+	}
+
+	private void showFragment() {
+		BoxViewFragment f = new BoxViewFragment();
+		f.setBoxId(getIntent().getIntExtra("id", -1));
+		getSupportFragmentManager().beginTransaction().add(R.id.container, f)
+				.commit();
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public class ViewActivity extends ActionBarActivity {
 		private TextView nameTxt;
 		private TextView descTxt;
 		private ImageView imageView;
-		
+
 		private ListFrgt listFrgt;
 
 		private LoadImageTask loadImageTask;
@@ -104,8 +109,9 @@ public class ViewActivity extends ActionBarActivity {
 			nameTxt = (TextView) rootView.findViewById(R.id.name);
 			descTxt = (TextView) rootView.findViewById(R.id.desc);
 			imageView = (ImageView) rootView.findViewById(R.id.photoView);
-			listFrgt = (ListFrgt)getFragmentManager().findFragmentById(R.id.fragment1);
-//			listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
+			listFrgt = (ListFrgt) getFragmentManager().findFragmentById(
+					R.id.fragment1);
+			// listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
 			return rootView;
 		}
 
@@ -115,12 +121,20 @@ public class ViewActivity extends ActionBarActivity {
 			// int id = getActivity().getIntent().getIntExtra("id", -1);
 			// 启动后台任务,取得Box信息,并显示画面.
 			setHasOptionsMenu(true);
+			initData();
+		}
+
+		/**
+		 * 初始化信息.
+		 */
+		private void initData() {
 			listFrgt.parentBoxId = boxId;
 			// assert id < 0;
 			if (box == null) {
 				// 当信息没有加载时
 				new LoadTask().execute(boxId);
 			}
+
 		}
 
 		@Override
@@ -129,10 +143,23 @@ public class ViewActivity extends ActionBarActivity {
 			case R.id.action_delete:
 				clickDelete(item);
 				return true;
+			case R.id.action_move:
+				// 移动物品.
+				clickMove(item);
+				return true;
 
 			default:
 				return super.onOptionsItemSelected(item);
 			}
+		}
+
+		private void clickMove(MenuItem item) {
+			// 显示当前位置,与可选组件.
+			// 显示位置选择器.
+			Intent i = new Intent(getActivity(), SelectBoxActivity.class);
+			i.putExtra("id", boxId);
+			startActivityForResult(i, 1);
+
 		}
 
 		/**
@@ -155,45 +182,75 @@ public class ViewActivity extends ActionBarActivity {
 		 * @param item
 		 */
 		public void clickDelete(MenuItem item) {
-			new AlertDialog.Builder(getActivity()).setCancelable(true)
-			.setMessage("确认要删除\"" + box.getName() + "\"吗?")
-			.setPositiveButton(android.R.string.yes, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//确认删除
-					new AsyncTask<Long, Void, String>() {
-						
-						@Override
-						protected String doInBackground(Long... params) {
-							box.delete(App.getApp(getActivity()).dao
-									.getWritableDatabase());
-							return null;
-						}
-						
-						@Override
-						protected void onPostExecute(String result) {
-							if (result == null) {
-								Toast.makeText(getActivity(), "删除成功!",
-										Toast.LENGTH_SHORT).show();
-								getActivity().finish();
-							}
-						}
-						
-					}.execute();
-					
-				}
-			})
-			.setNegativeButton(android.R.string.no, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//取消删除.
-					dialog.cancel();
-					
-				}
-			}).show();
+			new AlertDialog.Builder(getActivity())
+					.setCancelable(true)
+					.setMessage("确认要删除\"" + box.getName() + "\"吗?")
+					.setPositiveButton(android.R.string.yes,
+							new OnClickListener() {
 
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// 确认删除
+									new AsyncTask<Long, Void, String>() {
+
+										@Override
+										protected String doInBackground(
+												Long... params) {
+											box.delete(App
+													.getApp(getActivity()).dao
+													.getWritableDatabase());
+											return null;
+										}
+
+										@Override
+										protected void onPostExecute(
+												String result) {
+											if (result == null) {
+												Toast.makeText(getActivity(),
+														"删除成功!",
+														Toast.LENGTH_SHORT)
+														.show();
+												getActivity().finish();
+											}
+										}
+
+									}.execute();
+
+								}
+							})
+					.setNegativeButton(android.R.string.no,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// 取消删除.
+									dialog.cancel();
+
+								}
+							}).show();
+
+		}
+
+		@Override
+		public void onActivityResult(int requestCode, int resultCode,
+				Intent data) {
+			// super.onActivityResult(requestCode, resultCode, data);
+			switch (requestCode) {
+			case 1:
+				// 选择新容器
+				// if(requestCode == )
+				if (data != null) {
+					Bundle d = data.getExtras();
+					boolean success = d.getBoolean("success", false);
+					if (success) {
+						// 刷新画面.
+						initData();
+					}
+				}
+				break;
+			}
 		}
 
 		/**
