@@ -8,6 +8,7 @@
         android:title="删除"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="ifRoom" android:orderInCategory="10"/>
-    <item android:id="@+id/action_move" android:title="移动"></item>
+    <item android:id="@+id/action_edit" android:icon="@android:drawable/ic_menu_edit" android:title="修改"></item><item android:id="@+id/action_move" android:title="移动"></item>
+    
 
 </menu>

@@ -136,6 +136,11 @@ public class ViewActivity extends ActionBarActivity {
 			}
 
 		}
+		
+		private void updateData(){
+			box = null;
+			initData();
+		}
 
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,11 +153,33 @@ public class ViewActivity extends ActionBarActivity {
 				clickMove(item);
 				return true;
 
+			case R.id.action_edit:
+				// 移动物品.
+				clickEdit(item);
+				return true;
+
 			default:
 				return super.onOptionsItemSelected(item);
 			}
 		}
 
+		/**
+		 * 点击编辑.
+		 * 
+		 * @param item
+		 */
+		private void clickEdit(MenuItem item) {
+			Intent i = new Intent(getActivity(), EditActivity.class);
+			i.putExtra("id", boxId);
+			startActivityForResult(i, 2);
+
+		}
+
+		/**
+		 * 点击移动.
+		 * 
+		 * @param item
+		 */
 		private void clickMove(MenuItem item) {
 			// 显示当前位置,与可选组件.
 			// 显示位置选择器.
@@ -246,8 +273,16 @@ public class ViewActivity extends ActionBarActivity {
 					boolean success = d.getBoolean("success", false);
 					if (success) {
 						// 刷新画面.
-						initData();
+						updateData();
 					}
+				}
+				break;
+
+			case 2:
+				// 编辑后返回.
+				if (resultCode == RESULT_OK) {
+					// 刷新画面.
+					updateData();
 				}
 				break;
 			}
@@ -273,7 +308,7 @@ public class ViewActivity extends ActionBarActivity {
 			@Override
 			protected void onPostExecute(Box result) {
 				box = result;
-				
+
 				// 显示画面信息.
 				nameTxt.setText(box.getName());
 				descTxt.setText(box.getDescription());

@@ -49,20 +49,33 @@ public class EditActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// =================================================
+		// 画面初始化.
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit);
 		nameTxt = (EditText) findViewById(R.id.name);
 		descTxt = (EditText) findViewById(R.id.desc);
 		photoView = (ImageView) findViewById(R.id.photoView);
+		// --------------------------------------------------
+
 		Intent i = getIntent();
 		Integer id = i.getIntExtra("id", -1);
+
 		if (id > 0) {
 			// 编辑
-			box = new Box();
-			box.setId(id);
+			box = Box.loadById(App.openReadableDB(this), id);
+			assert box == null;
+			nameTxt.setText(box.getName());
+			descTxt.setText(box.getDescription());
+			if (box.getPhotoPath() != null) {
+				photoFile = new File(box.getPhotoPath());
+				loadImage(box.getPhotoPath());
+			}
+
 		} else {
 			// 新增
 			parentId = i.getIntExtra("parent", -1);
+			setTitle(R.string.title_activity_new);
 		}
 		// 拍照事件
 		photoView.setOnClickListener(new OnClickListener() {
@@ -80,12 +93,26 @@ public class EditActivity extends ActionBarActivity {
 
 	}
 
+	/**
+	 * 装载图片.
+	 * 
+	 * @param path
+	 */
+	private void loadImage(String path) {
+		if (loadImageTask != null) {
+			loadImageTask.cancel(true);
+			loadImageTask = null;
+		}
+		loadImageTask = new LoadImageTask(photoView);
+		loadImageTask.execute(path);
+	}
+
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		if (box != null) {
 			// 编辑
+
 		} else {
 			// 新增
 			// box = new Box();
@@ -134,7 +161,7 @@ public class EditActivity extends ActionBarActivity {
 		box.setDescription(descTxt.getText().toString());
 		box.setPhotoPath(photoFile == null ? null : photoFile.getAbsolutePath());
 		SQLiteDatabase db = App.openWritableDB(this);
-		if (parentId > 0) {
+		if (parentId != null && parentId > 0) {
 			// 有父容器
 			Box parent = Box.loadById(db, parentId);
 			box.setParent(parent);
@@ -145,7 +172,10 @@ public class EditActivity extends ActionBarActivity {
 				box.save(db);
 			} else {
 				// 保存更新.
-				// box.update(db);
+				box.update(db);
+				Intent i = new Intent();
+				i.putExtra("success", true);
+				setResult(RESULT_OK, i);
 			}
 		} finally {
 			db.close();
@@ -201,12 +231,13 @@ public class EditActivity extends ActionBarActivity {
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 			// 替换照片文件
 			photoFile = tempPhotoFile;
-			if (loadImageTask != null) {
-				loadImageTask.cancel(true);
-			}
-			loadImageTask = new LoadImageTask(photoView);
-
-			loadImageTask.execute(photoFile.getAbsolutePath());
+			// if (loadImageTask != null) {
+			// loadImageTask.cancel(true);
+			// }
+			// loadImageTask = new LoadImageTask(photoView);
+			//
+			// loadImageTask.execute(photoFile.getAbsolutePath());
+			loadImage(photoFile.getAbsolutePath());
 
 		}
 	}
