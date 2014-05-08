@@ -288,4 +288,54 @@ public class Box {
 
 	}
 
+	/**
+	 * 检查当前对象是否包含被传入的对象.
+	 * 
+	 * @param db
+	 *            数据库引用 .
+	 * 
+	 * @param c
+	 *            被包含的对象.
+	 * @return
+	 */
+	public boolean isContained(SQLiteDatabase db, Box c) {
+		if (c == null)
+			// 比对对象为空.
+			return false;
+		return isContained(db, c.getId());
+
+	}
+	
+	/**
+	 * 检查当前对象是否包含被传入的对象.
+	 * 
+	 * @param db
+	 *            数据库引用 .
+	 * 
+	 * @param c
+	 *            被包含的对象id.
+	 * @return
+	 */
+	public boolean isContained(SQLiteDatabase db, Integer c) {
+		if (c == null)
+			// 比对对象为空.
+			return false;
+		
+		if (c == id) {
+			// 自身比对.
+			return false;
+		}
+		Box sub = loadById(db, c);
+		if(sub == null){
+			return false;
+		}
+		assert sub == null;
+		if(id.equals(sub.parentId)){
+			return true;
+		}else{
+			return isContained(db, sub.parentId);
+		}
+
+	}
+
 }

@@ -97,6 +97,11 @@ public class SelectBoxActivity extends ActionBarActivity {
 		 * 容器选择器.
 		 */
 		private Spinner parentSpinner;
+
+		/**
+		 * 可选位置列表.
+		 */
+		private List<Map<String, ?>> parentSpinnerList = new ArrayList<Map<String, ?>>();
 		/**
 		 * 选中项目id-根
 		 */
@@ -132,7 +137,6 @@ public class SelectBoxActivity extends ActionBarActivity {
 		 * @param parent
 		 */
 		private void initSpinner(Box parent) {
-			List<Map<String, ?>> parentSpinnerList = new ArrayList<Map<String, ?>>();
 
 			// 根
 			HashMap<String, Object> root = new HashMap<String, Object>();
@@ -159,24 +163,40 @@ public class SelectBoxActivity extends ActionBarActivity {
 			parentSpinner.setAdapter(new SimpleAdapter(getActivity(),
 					parentSpinnerList,
 					android.R.layout.simple_spinner_dropdown_item,
-					new String[] { "name" }, new int[] { android.R.id.text1 }));
+					new String[] { "name" }, new int[] { android.R.id.text1 }) {
+				/**
+				 * @see android.widget.Adapter#getItemId(int)
+				 */
+				public long getItemId(int position) {
+					return ((Integer) ((Map<String, Object>) getItem(position))
+							.get("_id")).longValue();
+				}
+			});
 			// 确定选中项.
 			parentSpinner.setSelection(parent == null ? 0 : 1);
 
 			parentSpinner
 					.setOnItemSelectedListener(new OnItemSelectedListener() {
+						// 缓存最后一次选择的位置.
+						int lastSelected = 0;
 
 						@Override
 						public void onItemSelected(AdapterView<?> parent,
 								View view, int position, long id) {
-							Map<String, Object> map = (Map<String, Object>) parentSpinner
+							Map<String, Object> item = (Map<String, Object>) parentSpinner
 									.getAdapter().getItem(position);
+							Map<String, Object> map = item;
 							int selectId = (Integer) map.get("_id");
 							if (selectId == OTHER) {
 								// 调出细节选择画面.
 								startActivityForResult(new Intent(
 										getActivity(),
 										SelectBoxListActivity.class), 1);
+								// 返回最后一次选择的位置.
+								parent.setSelection(lastSelected);
+								parent.invalidate();
+							} else {
+								lastSelected = position;
 							}
 						}
 
@@ -213,21 +233,19 @@ public class SelectBoxActivity extends ActionBarActivity {
 						box.loadParent(db);
 						Integer pId = box.getParent() != null ? box.getParent()
 								.getId() : null;
-						if (parentId == null ? pId != null : parentId
+						if (parentId == null ? pId != null : !parentId
 								.equals(pId)) {
 							Box parent = parentId == null ? null : Box
 									.loadById(db, parentId);
-
 							box.setParent(parent);
 							box.update(App.openWritableDB(getActivity()));
-
 						}
-						;
 						return true;
 					}
 
 					@Override
 					protected void onPostExecute(Boolean result) {
+						getActivity().finish();
 						// 通知保存是否成功.
 						String msg;
 						if (result) {
@@ -240,10 +258,69 @@ public class SelectBoxActivity extends ActionBarActivity {
 					}
 				}.execute(box.getId(), parentId);
 				// 退出画面.
-				getActivity().finish();
+
 				return true;
 			}
 			return super.onOptionsItemSelected(item);
+		}
+
+		@Override
+		public void onActivityResult(int requestCode, int resultCode,
+				Intent data) {
+			switch (requestCode) {
+			// 选择其它位置返回.
+			case 1:
+				if (resultCode == RESULT_OK) {
+					// 选择了新位置
+					int id = data.getExtras().getInt("id");
+					// 载入新的位置信息
+					SQLiteDatabase db = App.openReadableDB(getActivity());
+					Box c = Box.loadById(db, id);
+
+					// 检查新位置是否有效.
+					boolean canMove = (!box.getId().equals(id))
+							&& (!box.isContained(db, c))
+							&& (!c.isContained(db, box));
+					if (canMove) {
+						// 如果有效,则加入新的位置,并选中它.
+						int position = addNewOption(c);
+						assert position <= 0;
+						parentSpinner.setSelection(position);
+					} else {
+						Toast.makeText(getActivity(), "不能移到这个位置!",
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+				break;
+
+			default:
+				super.onActivityResult(requestCode, resultCode, data);
+
+			}
+		}
+
+		private int addNewOption(Box c) {
+			int position = 0;
+			// 遍历检查是否有重复的.
+			for (int i = 1; i < parentSpinnerList.size() - 1; i++) {
+				Map<String, ?> row = parentSpinnerList.get(i);
+				if (c.getId().equals(row.get("_id"))) {
+					// 发现重复
+					position = i;
+					break;
+				}
+			}
+
+			if (position == 0) {
+				// 未找到.将新位置放在第二位.
+				position = 1;
+				HashMap<String, Object> p = new HashMap<String, Object>();
+				p.put("name", c.getName());
+				p.put("_id", c.getId());
+				parentSpinnerList.add(position, p);
+				// parentSpinner.invalidate();
+			}
+			return position;
 		}
 	}
 

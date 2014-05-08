@@ -1,14 +1,13 @@
 package com.axes.android.putinbox;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.axes.android.putinbox.dao.Box;
@@ -21,7 +20,7 @@ import com.axes.android.putinbox.fragment.ListFrgt;
  * 
  */
 public class SelectBoxListActivity extends ActionBarActivity {
-	
+
 	PlaceholderFragment currentFragment = null;
 
 	@Override
@@ -53,27 +52,8 @@ public class SelectBoxListActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.select_box_list, menu);
+		// getMenuInflater().inflate(R.menu.select_box_list, menu);
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		switch (id) {
-		case android.R.id.home:
-			// 返回上级
-
-			// 根级时关闭画面.
-			break;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -97,50 +77,61 @@ public class SelectBoxListActivity extends ActionBarActivity {
 		// }
 
 		@Override
-		public void onStart() {
-			super.onStart();
-			
-		}
-
-		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			// 点击行,显示Box细节画面.
-//			Intent i = new Intent(getActivity(), SelectBoxActivity.class);
-//			i.putExtra("id", (int) id);
-//			startActivity(i);
-			parentBoxId = (int)id;
+			// Intent i = new Intent(getActivity(), SelectBoxActivity.class);
+			// i.putExtra("id", (int) id);
+			// startActivity(i);
+			parentBoxId = (int) id;
 			updateData();
 		}
 
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
 			int id = item.getItemId();
-			if (id == R.id.action_settings) {
-				return true;
-			}
-			switch(id){
+			switch (id) {
+			// Home钮
 			case android.R.id.home:
-				//返回上级
-				if(parentBoxId != null){
-//					getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-					Box parentP = Box.loadById(App.openReadableDB(getActivity()), parentBoxId).getParent();
-					parentBoxId = parentP == null? null : parentP.getId();
+				if (parentBoxId != null) {
+					// 返回上级
+					// getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+					SQLiteDatabase db = App.openReadableDB(getActivity());
+					Box parentP = Box.loadById(db, parentBoxId);
+					parentP.loadParent(db);
+					parentP = parentP.getParent();
+					parentBoxId = parentP == null ? null : parentP.getId();
 					updateData();
-				}else{
-					//根级时关闭画面.
+				} else {
+					// 根级时关闭画面.
+					getActivity().setResult(RESULT_CANCELED);
+					getActivity().finish();
+				}
+				return true;
+
+				// 确定钮
+			case R.id.action_ok:
+				// 返回选中的项
+				if (parentBoxId != null) {
+					// 返回值
+					Intent result = new Intent();
+					result.putExtra("id", parentBoxId);
+					getActivity().setResult(RESULT_OK, result);
+					getActivity().finish();
+
+				} else {
+					// 根级时关闭画面.
+					getActivity().setResult(RESULT_CANCELED);
 					getActivity().finish();
 				}
 				return true;
 			}
 			return super.onOptionsItemSelected(item);
 		}
-		
+
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			inflater.inflate(R.menu.select_box_list, menu);
 		}
 	}
-
-	
 
 }
