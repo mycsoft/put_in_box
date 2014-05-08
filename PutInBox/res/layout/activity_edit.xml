@@ -30,15 +30,14 @@
             android:hint="name"
             android:lines="1" />
 
-        <MultiAutoCompleteTextView
+
+        <EditText
             android:id="@+id/desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="description" >
 
-            <requestFocus />
-        </MultiAutoCompleteTextView>
+        </EditText>
 
         <Button
             android:id="@+id/btn_save"
