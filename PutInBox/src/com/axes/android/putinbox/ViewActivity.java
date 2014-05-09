@@ -208,7 +208,7 @@ public class ViewActivity extends ActionBarActivity {
 		private void clickMove(MenuItem item) {
 			// 显示当前位置,与可选组件.
 			// 显示位置选择器.
-			Intent i = new Intent(getActivity(), SelectBoxActivity.class);
+			Intent i = new Intent(getActivity(), MoveBoxActivity.class);
 			i.putExtra("id", boxId);
 			startActivityForResult(i, 1);
 
@@ -291,15 +291,10 @@ public class ViewActivity extends ActionBarActivity {
 			// super.onActivityResult(requestCode, resultCode, data);
 			switch (requestCode) {
 			case 1:
-				// 选择新容器
-				// if(requestCode == )
-				if (data != null) {
-					Bundle d = data.getExtras();
-					boolean success = d.getBoolean("success", false);
-					if (success) {
-						// 刷新画面.
-						updateData();
-					}
+				// 移动后返回.
+				if (resultCode == RESULT_OK) {
+					// 刷新画面.
+					updateData();
 				}
 				break;
 

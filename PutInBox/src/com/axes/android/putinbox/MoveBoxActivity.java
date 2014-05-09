@@ -245,6 +245,7 @@ public class MoveBoxActivity extends ActionBarActivity {
 
 					@Override
 					protected void onPostExecute(Boolean result) {
+						getActivity().setResult(RESULT_OK);
 						getActivity().finish();
 						// 通知保存是否成功.
 						String msg;
