@@ -25,12 +25,12 @@ import android.widget.Toast;
 import com.axes.android.putinbox.dao.Box;
 
 /**
- * 容器选择Activity.
+ * 移动容器Activity.
  * 
  * @author mayc
  * 
  */
-public class SelectBoxActivity extends ActionBarActivity {
+public class MoveBoxActivity extends ActionBarActivity {
 
 	/**
 	 * 画面片段.
@@ -280,7 +280,7 @@ public class SelectBoxActivity extends ActionBarActivity {
 					// 检查新位置是否有效.
 					boolean canMove = (!box.getId().equals(id))
 							&& (!box.isContained(db, c))
-							&& (!c.isContained(db, box));
+							;
 					if (canMove) {
 						// 如果有效,则加入新的位置,并选中它.
 						int position = addNewOption(c);
