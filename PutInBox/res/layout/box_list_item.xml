@@ -13,15 +13,22 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
+        android:background="@drawable/card_shadow"
         android:showDividers="none" >
 
-        <ImageView
-            android:id="@+id/imageView"
+        <LinearLayout
             android:layout_width="@dimen/list_row_height"
             android:layout_height="@dimen/list_row_height"
-            android:scaleType="fitXY"
-            android:src="@drawable/abc_tab_selected_focused_holo" />
+            android:padding="4dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -41,8 +48,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/textColor"
                     android:text="Name"
+                    android:textColor="@color/textColor"
                     android:textSize="18sp" />
 
                 <TextView
@@ -54,9 +61,9 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@+id/name"
-                    android:textColor="@color/textColor"
                     android:text="id"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/textColor"
                     android:textSize="16sp" />
 
                 <TextView
@@ -72,18 +79,16 @@
                     android:textColor="@color/textColor"
                     android:textSize="16sp"
                     android:visibility="invisible" />
-
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textColor"
                 android:text="说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容说明内容"
+                android:textColor="@color/textColor"
                 android:textSize="12sp" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

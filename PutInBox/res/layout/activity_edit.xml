@@ -16,10 +16,11 @@
 
         <ImageView
             android:id="@+id/photoView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
+            android:scaleType="centerCrop"
             android:src="@android:drawable/picture_frame" />
 
         <EditText
