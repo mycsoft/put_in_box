@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/fragment1"
-        android:name="com.axes.android.putinbox.fragment.ListFrgt"
+        android:name="com.axes.android.putinbox.ViewActivity$ChildrenListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@android:layout/list_content" />

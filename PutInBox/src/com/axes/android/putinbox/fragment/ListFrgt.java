@@ -30,7 +30,7 @@ import com.axes.android.putinbox.task.LoadImageTask;
 
 /**
  * 列表的画面.
- * 
+ * 本画面是很多列表显示物品画面的基类.
  * @author MaYichao
  * 
  */
@@ -56,7 +56,7 @@ public class ListFrgt extends ListFragment {
 	/**
 	 * 更新数据.
 	 */
-	protected void updateData() {
+	public void updateData() {
 
 		Cursor c = parentBoxId == null ? Box.queryTopList(App
 				.openReadableDB(getActivity())) : Box.queryByParent(

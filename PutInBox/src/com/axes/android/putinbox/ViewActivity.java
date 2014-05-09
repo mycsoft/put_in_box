@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ import com.axes.android.putinbox.task.LoadImageTask;
  */
 public class ViewActivity extends ActionBarActivity {
 
+	BoxViewFragment f;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,7 +47,7 @@ public class ViewActivity extends ActionBarActivity {
 	}
 
 	private void showFragment() {
-		BoxViewFragment f = new BoxViewFragment();
+		f = new BoxViewFragment();
 		f.setBoxId(getIntent().getIntExtra("id", -1));
 		getSupportFragmentManager().beginTransaction().add(R.id.container, f)
 				.commit();
@@ -68,10 +71,15 @@ public class ViewActivity extends ActionBarActivity {
 			return true;
 		}
 		if (id == android.R.id.home) {
-			finish();
+			f.onBackPressed();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		f.onBackPressed();
 	}
 
 	/**
@@ -86,12 +94,26 @@ public class ViewActivity extends ActionBarActivity {
 		private TextView descTxt;
 		private ImageView imageView;
 
-		private ListFrgt listFrgt;
+		private ChildrenListFragment listFrgt;
 
 		private LoadImageTask loadImageTask;
 
 		public int getBoxId() {
 			return boxId;
+		}
+
+		public void onBackPressed() {
+			// 如果有父级,则返回父级
+			box.loadParent(App.openReadableDB(getActivity()));
+			if (box.getParent() != null) {
+				boxId = box.getParent().getId();
+				updateData();
+			} else {
+				// 否则退出.
+				getActivity().finish();
+
+			}
+
 		}
 
 		public void setBoxId(int boxId) {
@@ -109,8 +131,10 @@ public class ViewActivity extends ActionBarActivity {
 			nameTxt = (TextView) rootView.findViewById(R.id.name);
 			descTxt = (TextView) rootView.findViewById(R.id.desc);
 			imageView = (ImageView) rootView.findViewById(R.id.photoView);
-			listFrgt = (ListFrgt) getFragmentManager().findFragmentById(
-					R.id.fragment1);
+			listFrgt = (ChildrenListFragment) getFragmentManager()
+					.findFragmentById(R.id.fragment1);
+			// 关联两个画面.
+			listFrgt.parentFragment = this;
 			// listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
 			return rootView;
 		}
@@ -129,6 +153,7 @@ public class ViewActivity extends ActionBarActivity {
 		 */
 		private void initData() {
 			listFrgt.parentBoxId = boxId;
+			listFrgt.updateData();
 			// assert id < 0;
 			if (box == null) {
 				// 当信息没有加载时
@@ -136,8 +161,8 @@ public class ViewActivity extends ActionBarActivity {
 			}
 
 		}
-		
-		private void updateData(){
+
+		private void updateData() {
 			box = null;
 			initData();
 		}
@@ -316,14 +341,33 @@ public class ViewActivity extends ActionBarActivity {
 
 				if (box.getPhotoPath() != null) {
 					// 显示图片
-					// Bitmap img =
-					// BitmapFactory.decodeFile(box.getPhotoPath());
-					// imageView.setImageURI(Uri.fromFile(new
-					// File(box.getPhotoPath())));
 					loadImage(box.getPhotoPath());
 
+				} else {
+					// 显示默认图片
+					imageView.setImageResource(R.drawable.default_photo);
+					imageView.invalidate();
 				}
 			}
+
+		}
+	}
+
+	/**
+	 * 子列表.
+	 * 
+	 * @author mayc
+	 * 
+	 */
+	public static class ChildrenListFragment extends ListFrgt {
+
+		private BoxViewFragment parentFragment = null;
+
+		@Override
+		public void onListItemClick(ListView l, View v, int position, long id) {
+			// 刷新本画面.
+			parentFragment.boxId = (int) id;
+			parentFragment.updateData();
 
 		}
 	}
