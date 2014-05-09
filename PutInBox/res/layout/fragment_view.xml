@@ -23,7 +23,7 @@
             android:layout_height="300dp"
             android:layout_gravity="center_horizontal"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/gallery_thumb" />
+            android:src="@drawable/default_photo" />
 
         <TextView
             android:id="@+id/name"

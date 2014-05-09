@@ -21,7 +21,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/picture_frame" />
+            android:src="@drawable/default_photo" />
 
         <EditText
             android:id="@+id/name"
