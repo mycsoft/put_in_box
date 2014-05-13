@@ -9,6 +9,7 @@
     </item>
     <item
         android:id="@+id/autoAdd"
+        android:icon="@drawable/ic_action_auto_add"
         mytest:showAsAction="ifRoom"
         android:title="连拍新增">
     </item>
