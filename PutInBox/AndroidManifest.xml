@@ -40,7 +40,7 @@
             android:label="@string/title_activity_view" >
         </activity>
         <activity
-            android:name="com.axes.android.putinbox.SelectBoxActivity"
+            android:name="com.axes.android.putinbox.MoveBoxActivity"
             android:label="@string/title_activity_select_box" >
         </activity>
         <activity

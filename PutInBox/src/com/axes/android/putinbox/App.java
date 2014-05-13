@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 
 import com.axes.android.putinbox.dao.Dao;
 
@@ -87,8 +88,22 @@ public class App extends Application {
 	
 	/**
 	 * 打开相机,进行拍照.
+	 * @param context 上下文.
+	 * @param requestCode 请求号
+	 * @return
+	 * @see #openCamera(Activity, Fragment, int);
 	 */
 	public static File openCamera(Activity context,int requestCode){
+		return openCamera(context, null, requestCode);
+	}
+	/**
+	 * 打开相机,进行拍照.
+	 * @param context 上下文.
+	 * @param fragment 启动的Fragment.如果为空,则从上下文启动.
+	 * @param requestCode 请求号
+	 * @return
+	 */
+	public static File openCamera(Activity context,Fragment fragment,int requestCode){
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent
 		if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
@@ -105,7 +120,14 @@ public class App extends Application {
 				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 						Uri.fromFile(photoFile));
 //				tempPhotoFile = photoFile;
-				context.startActivityForResult(takePictureIntent, requestCode);
+				if(fragment != null){
+					//从fragment启动.
+					fragment.startActivityForResult(takePictureIntent, requestCode);
+				}else{
+					//从Activity启动.
+					context.startActivityForResult(takePictureIntent, requestCode);
+				}
+				
 				return photoFile;
 			}
 		}

@@ -7,6 +7,11 @@
         mytest:showAsAction="always"
         android:title="Add">
     </item>
+    <item
+        android:id="@+id/autoAdd"
+        mytest:showAsAction="ifRoom"
+        android:title="连拍新增">
+    </item>
 <!--   -->
 
 </menu>
