@@ -10,5 +10,6 @@
     <string name="title_activity_view">物品详情</string>
     <string name="title_activity_select_box">移动到</string>
     <string name="title_activity_select_box_list">容器选择列表</string>
+    <string name="title_activity_about">关于</string>
 
 </resources>

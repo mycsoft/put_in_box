@@ -47,6 +47,10 @@
             android:name="com.axes.android.putinbox.SelectBoxListActivity"
             android:label="@string/title_activity_select_box_list" >
         </activity>
+        <activity
+            android:name="com.axes.android.putinbox.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

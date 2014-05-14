@@ -1,8 +1,10 @@
 package com.axes.android.putinbox;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
@@ -37,6 +39,19 @@ public class MainActivity extends ActionBarActivity {
 			last_back = t;
 			Toast.makeText(this, "再次点击退出!", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_about:
+			startActivity(new Intent(this, AboutActivity.class));
+			return true;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }
