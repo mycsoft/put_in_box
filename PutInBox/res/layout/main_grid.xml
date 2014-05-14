@@ -8,13 +8,15 @@
     tools:listitem="@android:layout/simple_list_item_2" >
 
     <GridView
-        android:id="@+id/gridView1"
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:horizontalSpacing="2dp"
-        android:numColumns="3"
+        android:layout_height="match_parent"
+        android:columnWidth="100dp"
+        android:gravity="center"
+        android:horizontalSpacing="4dp"
+        android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="2dp"
+        android:verticalSpacing="4dp"
         tools:listitem="@layout/main_grid_item" >
 
     </GridView>

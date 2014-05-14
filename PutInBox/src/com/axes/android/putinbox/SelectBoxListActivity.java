@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.AdapterView;
 
 import com.axes.android.putinbox.dao.Box;
 import com.axes.android.putinbox.fragment.ListFrgt;
@@ -77,11 +77,9 @@ public class SelectBoxListActivity extends ActionBarActivity {
 		// }
 
 		@Override
-		public void onListItemClick(ListView l, View v, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
 			// 点击行,显示Box细节画面.
-			// Intent i = new Intent(getActivity(), SelectBoxActivity.class);
-			// i.putExtra("id", (int) id);
-			// startActivity(i);
 			parentBoxId = (int) id;
 			updateData();
 		}

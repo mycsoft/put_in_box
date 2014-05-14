@@ -14,8 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -357,13 +357,13 @@ public class ViewActivity extends ActionBarActivity {
 	public static class ChildrenListFragment extends ListFrgt {
 
 		private BoxViewFragment parentFragment = null;
-
+		
 		@Override
-		public void onListItemClick(ListView l, View v, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
 			// 刷新本画面.
 			parentFragment.boxId = (int) id;
 			parentFragment.updateData();
-
 		}
 	}
 
