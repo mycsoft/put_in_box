@@ -10,8 +10,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="62dp"
@@ -39,11 +39,48 @@
             android:layout_gravity="center"
             android:text="作者:马翼超" />
 
-        <TextView
-            android:id="@+id/textView3"
+        <LinearLayout
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_email" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="#669900"
+                android:text="mycsoft@qq.com" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/homePage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="联系我:mycsoft@qq.com" />
+            android:layout_marginTop="8dp" >
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_action_www" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/sys_home_page_url"
+                android:textColor="#0099cc"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

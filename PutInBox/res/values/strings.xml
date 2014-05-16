@@ -14,5 +14,9 @@
     <string name="title_activity_hello">Put In Box</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    
+    
+    <string name="sys_home_page_url">http://mycsoft.github.io/put_in_box</string>
+    <string name="sys_email">mycsoft@qq.com</string>
 
 </resources>
