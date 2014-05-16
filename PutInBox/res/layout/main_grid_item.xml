@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="fill"
-        android:padding="4dp" >
+        android:paddingBottom="1dp"
+        android:paddingRight="1dp" >
 
         <ImageView
             android:id="@+id/imageView"
@@ -22,7 +23,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="24dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" >
 
@@ -39,6 +40,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:shadowColor="@android:color/background_dark"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="0.8"
                 android:text="&lt;未命名>"
                 android:textColor="#fff"
                 android:textSize="18sp" />
