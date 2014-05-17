@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,11 +90,21 @@ public class BaseBoxListFrgt extends Fragment implements OnItemClickListener {
 					protected Integer doInBackground(Integer... params) {
 						Integer id = params[0];
 						SQLiteDatabase db = App.openReadableDB(getActivity());
+						// try {
 						Box box = Box.loadById(db, id);
+						// assert box != null;
+						// if (box == null) {
+						// Log.w("myc", "指定的id找不到Box对象:" + id);
+						//
+						// return 0;
+						// }
 
 						int count = box.getAllChildrenCount(db);
-						db.close();
 						return count;
+						// } finally {
+						//
+						// // db.close();
+						// }
 					}
 
 					protected void onPostExecute(Integer result) {

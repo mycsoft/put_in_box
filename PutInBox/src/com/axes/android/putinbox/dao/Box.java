@@ -9,6 +9,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * 一个容器对象.任何对象都可能是个容器. 本对象是系统中的基本类型.
@@ -179,13 +180,21 @@ public class Box {
 	}
 
 	public static Box loadById(SQLiteDatabase db, Integer id) {
+		if (!db.isOpen()) {
+			throw new RuntimeException("数据库被谁关了?");
+		}
+		if (id == null || id == 0) {
+			return null;
+		}
 		Cursor c = db.query("box", null, "_id = ? ",
 				new String[] { id.toString() }, null, null, null);
-		if (c.getCount() <= 0)
+		if (c.getCount() <= 0) {
+			Log.d("myc", "can't find by id = " + id);
 			return null;
+		}
 		c.moveToFirst();
 		Box box = new Box(c);
-		c.close();
+		// c.close();
 		return box;
 	}
 
@@ -258,7 +267,7 @@ public class Box {
 				c += b.getAllChildrenCount(db);
 			} while (cursor.moveToNext());
 		}
-		cursor.close();
+		// cursor.close();
 		return c;
 	}
 
@@ -305,7 +314,7 @@ public class Box {
 		return isContained(db, c.getId());
 
 	}
-	
+
 	/**
 	 * 检查当前对象是否包含被传入的对象.
 	 * 
@@ -320,19 +329,19 @@ public class Box {
 		if (c == null)
 			// 比对对象为空.
 			return false;
-		
+
 		if (c == id) {
 			// 自身比对.
 			return false;
 		}
 		Box sub = loadById(db, c);
-		if(sub == null){
+		if (sub == null) {
 			return false;
 		}
 		assert sub == null;
-		if(id.equals(sub.parentId)){
+		if (id.equals(sub.parentId)) {
 			return true;
-		}else{
+		} else {
 			return isContained(db, sub.parentId);
 		}
 
