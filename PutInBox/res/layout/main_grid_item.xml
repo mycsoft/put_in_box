@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/card_shadow"
+    android:minHeight="48dp"
+    android:minWidth="48dp"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -12,12 +14,12 @@
         android:paddingBottom="1dp"
         android:paddingRight="1dp" >
 
-        <ImageView
+        <com.axes.android.putinbox.ui.SquareImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
+            android:adjustViewBounds="false"
             android:scaleType="centerCrop"
             android:src="@drawable/default_photo" />
 
@@ -31,7 +33,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0.5"
+                android:alpha="0.25"
                 android:scaleType="fitXY"
                 android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
 
