@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +43,7 @@ public class BaseBoxListFrgt extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View root = inflater.inflate(R.layout.main_grid, container);
+		View root = inflater.inflate(R.layout.main_grid, null);
 		gridView = (GridView) root.findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(this);
 		return root;
@@ -76,23 +75,26 @@ public class BaseBoxListFrgt extends Fragment implements OnItemClickListener {
 				// 高=宽
 				// v.setLayoutParams(new LayoutParams(v.getWidth(),
 				// v.getWidth()));
+				// v.invalidate();
 				// 显示图片.
 				String path = ((Cursor) getItem(arg0)).getString(4);
 				ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
+				// imgV.setLayoutParams(new LayoutParams(imgV.getWidth(),
+				// imgV.getWidth()));
 				// imgV.setImageLevel(3);
 				final Integer id = ((Cursor) getItem(arg0)).getInt(0);
 				if (path != null) {
 					Bitmap img = imageWeekMap.get(id);
 					if (img != null) {
-						//先检查缓存
+						// 先检查缓存
 						imgV.setImageBitmap(img);
 					} else {
-						
+
 						new LoadImageTask(imgV) {
 							@Override
 							protected void onPostExecute(Bitmap result) {
 								if (result != null) {
-									//缓存图片.
+									// 缓存图片.
 									imageWeekMap.put(id, result);
 								}
 								super.onPostExecute(result);

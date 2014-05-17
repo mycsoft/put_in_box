@@ -17,10 +17,11 @@
         android:gravity="center"
         android:horizontalSpacing="4dp"
         android:numColumns="auto_fit"
+        android:overScrollMode="always"
+        android:scrollbars="none"
         android:stretchMode="columnWidth"
         android:verticalSpacing="4dp"
         tools:listitem="@layout/main_grid_item" >
-
     </GridView>
 
 </LinearLayout>

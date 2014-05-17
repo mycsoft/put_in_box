@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,14 +55,6 @@ public class ViewActivity extends ActionBarActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.view, menu);
-		return true;
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -94,7 +87,7 @@ public class ViewActivity extends ActionBarActivity {
 		private TextView descTxt;
 		private ImageView imageView;
 
-		private ChildrenListFragment listFrgt;
+		// private ChildrenListFragment listFrgt;
 
 		private LoadImageTask loadImageTask;
 
@@ -131,11 +124,11 @@ public class ViewActivity extends ActionBarActivity {
 			nameTxt = (TextView) rootView.findViewById(R.id.name);
 			descTxt = (TextView) rootView.findViewById(R.id.desc);
 			imageView = (ImageView) rootView.findViewById(R.id.photoView);
-			listFrgt = (ChildrenListFragment) getFragmentManager()
-					.findFragmentById(R.id.fragment1);
-			// 关联两个画面.
-			listFrgt.parentFragment = this;
-			// listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
+			// listFrgt = (ChildrenListFragment) getFragmentManager()
+			// .findFragmentById(R.id.fragment1);
+			// // 关联两个画面.
+			// listFrgt.parentFragment = this;
+			// // listFrgt = (ListFrgt)rootView.findViewById(R.id.fragment1);
 			return rootView;
 		}
 
@@ -148,12 +141,17 @@ public class ViewActivity extends ActionBarActivity {
 			initData();
 		}
 
+		@Override
+		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+			inflater.inflate(R.menu.view, menu);
+		}
+
 		/**
 		 * 初始化信息.
 		 */
 		private void initData() {
-			listFrgt.parentBoxId = boxId;
-			listFrgt.updateData();
+			// listFrgt.parentBoxId = boxId;
+			// listFrgt.updateData();
 			// assert id < 0;
 			if (box == null) {
 				// 当信息没有加载时
@@ -162,7 +160,7 @@ public class ViewActivity extends ActionBarActivity {
 
 		}
 
-		private void updateData() {
+		public void updateData() {
 			box = null;
 			initData();
 		}
@@ -333,6 +331,8 @@ public class ViewActivity extends ActionBarActivity {
 				nameTxt.setText(box.getName());
 				descTxt.setText(box.getDescription());
 				getActivity().setTitle(box.getName());
+				((ActionBarActivity) getActivity()).getSupportActionBar()
+						.setTitle(box.getName());
 
 				if (box.getPhotoPath() != null) {
 					// 显示图片
@@ -357,7 +357,7 @@ public class ViewActivity extends ActionBarActivity {
 	public static class ChildrenListFragment extends ListFrgt {
 
 		private BoxViewFragment parentFragment = null;
-		
+
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {

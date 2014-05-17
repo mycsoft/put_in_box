@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 
 import com.axes.android.putinbox.App;
 import com.axes.android.putinbox.R;
-import com.axes.android.putinbox.ViewActivity;
+import com.axes.android.putinbox.ViewWithTabActivity;
 import com.axes.android.putinbox.dao.Box;
 
 /**
@@ -79,7 +79,8 @@ public class ListFrgt extends BaseBoxListFrgt {
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// 点击行,显示Box细节画面.
-		Intent i = new Intent(getActivity(), ViewActivity.class);
+		// Intent i = new Intent(getActivity(), ViewActivity.class);
+		Intent i = new Intent(getActivity(), ViewWithTabActivity.class);
 		i.putExtra("id", (int) id);
 		startActivity(i);
 	}
