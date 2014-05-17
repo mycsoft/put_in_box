@@ -30,7 +30,7 @@
             android:layout_marginTop="32dp"
             android:keepScreenOn="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_launcher_web" />
 
     </LinearLayout>
 
