@@ -1,5 +1,7 @@
 package com.axes.android.putinbox.task;
 
+import com.axes.android.putinbox.R;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -27,6 +29,11 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 		return loadImage(params[0]);
 		// return null;
 
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		imageView.setImageResource(R.drawable.default_photo);
 	}
 
 	/**
