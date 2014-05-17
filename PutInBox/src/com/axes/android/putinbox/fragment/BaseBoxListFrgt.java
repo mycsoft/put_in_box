@@ -3,8 +3,11 @@
  */
 package com.axes.android.putinbox.fragment;
 
+import java.util.WeakHashMap;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +38,8 @@ public class BaseBoxListFrgt extends Fragment implements OnItemClickListener {
 	public Integer parentBoxId;
 
 	private GridView gridView;
+
+	private WeakHashMap<Integer, Bitmap> imageWeekMap = new WeakHashMap<Integer, Bitmap>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,8 +80,25 @@ public class BaseBoxListFrgt extends Fragment implements OnItemClickListener {
 				String path = ((Cursor) getItem(arg0)).getString(4);
 				ImageView imgV = (ImageView) v.findViewById(R.id.imageView);
 				// imgV.setImageLevel(3);
+				final Integer id = ((Cursor) getItem(arg0)).getInt(0);
 				if (path != null) {
-					new LoadImageTask(imgV).execute(path);
+					Bitmap img = imageWeekMap.get(id);
+					if (img != null) {
+						//先检查缓存
+						imgV.setImageBitmap(img);
+					} else {
+						
+						new LoadImageTask(imgV) {
+							@Override
+							protected void onPostExecute(Bitmap result) {
+								if (result != null) {
+									//缓存图片.
+									imageWeekMap.put(id, result);
+								}
+								super.onPostExecute(result);
+							}
+						}.execute(path);
+					}
 					// imgV.setImageURI(Uri.fromFile(new File(path)));
 
 				} else {
