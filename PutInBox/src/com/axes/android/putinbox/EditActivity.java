@@ -2,15 +2,22 @@ package com.axes.android.putinbox;
 
 import java.io.File;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnAttachStateChangeListener;
 import android.view.View.OnClickListener;
+import android.view.View.OnLayoutChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -40,6 +47,14 @@ public class EditActivity extends ActionBarActivity {
 	 * 正式照片文件.
 	 */
 	private File photoFile;
+	/**
+	 * 照片路径.
+	 */
+	private Uri photoPathUri;
+	/**
+	 * 选择照片的对话框.有两个选项:相机与相册.
+	 */
+	private Dialog photoChangeDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +76,6 @@ public class EditActivity extends ActionBarActivity {
 			assert box == null;
 			nameTxt.setText(box.getName());
 			descTxt.setText(box.getDescription());
-			if (box.getPhotoPath() != null) {
-				photoFile = new File(box.getPhotoPath());
-				loadImage(box.getPhotoPath());
-			}
 
 		} else {
 			// 新增
@@ -76,7 +87,8 @@ public class EditActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				photo();
+				// photo();
+				photoChangeDialog.show();
 
 			}
 		});
@@ -85,6 +97,43 @@ public class EditActivity extends ActionBarActivity {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// actionBar.setDisplayShowCustomEnabled(true);
 
+		photoChangeDialog = initPhotoDialog();
+
+	}
+
+	/**
+	 * 初始化照片对话框.
+	 * 
+	 * @return
+	 */
+	private Dialog initPhotoDialog() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("选择照片");
+
+		builder.setPositiveButton("相机", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface
+
+			dialog, int which) {
+				photo();
+
+			}
+		});
+		builder.setNegativeButton("相册", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface
+
+			dialog, int which) {
+				Intent intent = new Intent(
+						Intent.ACTION_PICK,
+						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(intent, REQUEST_IMAGE_SELECT);
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		// alert.show();
+		return alert;
 	}
 
 	/**
@@ -92,25 +141,46 @@ public class EditActivity extends ActionBarActivity {
 	 * 
 	 * @param path
 	 */
-	private void loadImage(String path) {
+	private void loadImage(String path, String type) {
 		if (loadImageTask != null) {
 			loadImageTask.cancel(true);
 			loadImageTask = null;
 		}
 		loadImageTask = new LoadImageTask(photoView);
-		loadImageTask.execute(path);
+		loadImageTask.execute(path, type);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPostResume() {
+		// TODO Auto-generated method stub
+		super.onPostResume();
 		if (box != null) {
 			// 编辑
-
+			
+			if (box.getPhotoPath() != null) {
+				// loadImage(box.getPhotoPath(), LoadImageTask.TYPE_FILE);
+				if (photoPathUri == null) {
+					photoPathUri = Uri.parse(box.getPhotoPath());
+				}
+				loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+				
+			}
+			
 		} else {
 			// 新增
 			// box = new Box();
-
+			
 		}
 	}
 
@@ -153,7 +223,13 @@ public class EditActivity extends ActionBarActivity {
 		}
 		box.setName(nameTxt.getText().toString());
 		box.setDescription(descTxt.getText().toString());
-		box.setPhotoPath(photoFile == null ? null : photoFile.getAbsolutePath());
+
+		// 保存相册内的照片为文件.
+		if (photoFile == null && photoPathUri != null) {
+
+		}
+
+		box.setPhotoPath(photoPathUri == null ? null : photoPathUri.toString());
 		SQLiteDatabase db = App.openWritableDB(this);
 		if (parentId != null && parentId > 0) {
 			// 有父容器
@@ -183,6 +259,10 @@ public class EditActivity extends ActionBarActivity {
 	 * 拍照事件的请求码.
 	 */
 	static final int REQUEST_IMAGE_CAPTURE = 1;
+	/**
+	 * 选择照片事件的请求码.
+	 */
+	static final int REQUEST_IMAGE_SELECT = 3;
 	/**
 	 * 保存照片的请求码.
 	 */
@@ -223,18 +303,37 @@ public class EditActivity extends ActionBarActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-			if (tempPhotoFile != null) {
-				// 替换照片文件
-				photoFile = tempPhotoFile;
-				// if (loadImageTask != null) {
-				// loadImageTask.cancel(true);
-				// }
-				// loadImageTask = new LoadImageTask(photoView);
-				//
-				// loadImageTask.execute(photoFile.getAbsolutePath());
-				loadImage(photoFile.getAbsolutePath());
+		switch (requestCode) {
+		case REQUEST_IMAGE_CAPTURE:
+			// 拍照返回
+			if (resultCode == RESULT_OK) {
+				if (tempPhotoFile != null) {
+					// 替换照片文件
+					photoFile = tempPhotoFile;
+					photoPathUri = Uri.fromFile(photoFile);
+					loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+				}
 			}
+
+			break;
+
+		case REQUEST_IMAGE_SELECT:
+			// 选择照片返回.
+			if (resultCode == RESULT_OK) {
+				try {
+					// 获得图片的uri
+					Uri originalUri = data.getData();
+					photoFile = null;
+					photoPathUri = originalUri;
+					loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+				} catch (Exception e) {
+					Log.e("myc", "选择照片失败.", e);
+				}
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 
