@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -74,7 +75,6 @@ public class EditActivity extends ActionBarActivity {
 			assert box == null;
 			nameTxt.setText(box.getName());
 			descTxt.setText(box.getDescription());
-			
 
 		} else {
 			// 新增
@@ -92,6 +92,8 @@ public class EditActivity extends ActionBarActivity {
 			}
 		});
 
+		photoView.measure(300, 300);
+
 		actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// actionBar.setDisplayShowCustomEnabled(true);
@@ -99,8 +101,6 @@ public class EditActivity extends ActionBarActivity {
 		photoChangeDialog = initPhotoDialog();
 
 	}
-	
-	
 
 	/**
 	 * 初始化照片对话框.
@@ -152,30 +152,39 @@ public class EditActivity extends ActionBarActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-	}
+	protected void onResume() {
+		super.onResume();
 
-	
-	@Override
-	protected void onPostResume() {
-		super.onPostResume();
 		if (box != null) {
 			// 编辑
-			
+
 			if (box.getPhotoPath() != null) {
 				// loadImage(box.getPhotoPath(), LoadImageTask.TYPE_FILE);
 				if (photoPathUri == null) {
 					photoPathUri = Uri.parse(box.getPhotoPath());
 				}
-				loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
-				
+				//通过这个办法来解决第一次显示时,大小为0的问题.
+				photoView.getViewTreeObserver().addOnPreDrawListener(
+						new OnPreDrawListener() {
+
+							@Override
+							public boolean onPreDraw() {
+								photoView.getViewTreeObserver()
+										.removeOnPreDrawListener(this);
+								loadImage(photoPathUri.toString(),
+										LoadImageTask.SrcType.uri.toString());
+								return true;
+							}
+						});
+
+				// photoView.setImageURI(photoPathUri);
+
 			}
-			
+
 		} else {
 			// 新增
 			// box = new Box();
-			
+
 		}
 	}
 
@@ -306,7 +315,8 @@ public class EditActivity extends ActionBarActivity {
 					// 替换照片文件
 					photoFile = tempPhotoFile;
 					photoPathUri = Uri.fromFile(photoFile);
-					loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
+					loadImage(photoPathUri.toString(),
+							LoadImageTask.SrcType.uri.toString());
 				}
 			}
 
@@ -320,7 +330,8 @@ public class EditActivity extends ActionBarActivity {
 					Uri originalUri = data.getData();
 					photoFile = null;
 					photoPathUri = originalUri;
-					loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
+					loadImage(photoPathUri.toString(),
+							LoadImageTask.SrcType.uri.toString());
 				} catch (Exception e) {
 					Log.e("myc", "选择照片失败.", e);
 				}

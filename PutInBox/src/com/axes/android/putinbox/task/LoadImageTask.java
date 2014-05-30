@@ -160,8 +160,8 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 				}
 
 				options.inSampleSize = Math.max(
-						options.outWidth / imageView.getWidth(),
-						options.outHeight / imageView.getHeight());
+						options.outWidth / imageView.getMeasuredWidth(),
+						options.outHeight / imageView.getMeasuredHeight());
 				Log.d("myc", "in sample size=" + options.inSampleSize);
 				// options.inSampleSize = 2;
 				// ========================================================
@@ -198,8 +198,12 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 		 */
 		protected boolean canLoad() {
 			// 图片显示区域不可为空.
-			if (imageView == null || imageView.getWidth() <= 0
-					|| imageView.getHeight() <= 0) {
+			if (imageView == null 
+//					|| imageView.getWidth() <= 0
+//					|| imageView.getHeight() <= 0
+					|| imageView.getMeasuredWidth() <= 0
+					|| imageView.getMeasuredHeight() <= 0
+					) {
 				// 图片无法显示.
 				return false;
 			}
