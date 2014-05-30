@@ -74,6 +74,7 @@ public class EditActivity extends ActionBarActivity {
 			assert box == null;
 			nameTxt.setText(box.getName());
 			descTxt.setText(box.getDescription());
+			
 
 		} else {
 			// 新增
@@ -98,6 +99,8 @@ public class EditActivity extends ActionBarActivity {
 		photoChangeDialog = initPhotoDialog();
 
 	}
+	
+	
 
 	/**
 	 * 初始化照片对话框.
@@ -165,7 +168,7 @@ public class EditActivity extends ActionBarActivity {
 				if (photoPathUri == null) {
 					photoPathUri = Uri.parse(box.getPhotoPath());
 				}
-				loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+				loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
 				
 			}
 			
@@ -303,7 +306,7 @@ public class EditActivity extends ActionBarActivity {
 					// 替换照片文件
 					photoFile = tempPhotoFile;
 					photoPathUri = Uri.fromFile(photoFile);
-					loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+					loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
 				}
 			}
 
@@ -317,7 +320,7 @@ public class EditActivity extends ActionBarActivity {
 					Uri originalUri = data.getData();
 					photoFile = null;
 					photoPathUri = originalUri;
-					loadImage(photoPathUri.toString(), LoadImageTask.TYPE_URI);
+					loadImage(photoPathUri.toString(), LoadImageTask.SrcType.uri.toString());
 				} catch (Exception e) {
 					Log.e("myc", "选择照片失败.", e);
 				}

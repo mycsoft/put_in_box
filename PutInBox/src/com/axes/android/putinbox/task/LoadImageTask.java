@@ -22,9 +22,17 @@ import com.axes.android.putinbox.R;
 public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	ImageView imageView;
 	/** 来源类型-文件 */
-	public static final String TYPE_FILE = "file";
+//	public static final String TYPE_FILE = "file";
 	/** 来源类型-文件 */
-	public static final String TYPE_URI = "URI";
+//	public static final String TYPE_URI = "URI";
+	/**
+	 * 来源类型
+	 * @author MaYichao
+	 *
+	 */
+	public enum SrcType {
+		file,uri
+	}
 
 	public LoadImageTask(ImageView imageView) {
 		assert imageView == null;
@@ -41,12 +49,12 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 //			return null;
 //		}
 		// 解析类型
-		String type = TYPE_URI;
+		SrcType type = SrcType.uri;
 		if (params.length > 1) {
-			type = params[1];
+			type = SrcType.valueOf(params[1]);
 		}
 
-		if (!type.equals(TYPE_FILE)) {
+		if (type != SrcType.file) {
 			return loadImageByUri(params[0]);
 		} else {
 			return loadImageByFile(params[0]);
@@ -66,44 +74,7 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	 */
 	protected Bitmap loadImageByUri(final String uriString) {
 
-		// if (uriString == null) {
-		// return null;
-		// }
-		// try {
-		// InputStream inputStream = imageView.getContext()
-		// .getContentResolver().openInputStream(Uri.parse(uriString));
-		// return loadImageByStream(inputStream);
-		//
-		// } catch (Exception e) {
-		// Log.w("myc", "can't load image uri:" + uriString, e);
-		// return null;
-		// }
-
-		return new LoadImageFactory() {
-
-			protected boolean canLoad() {
-				if (super.canLoad()) {
-					return uriString != null;
-				} else {
-					return false;
-				}
-			};
-
-			@Override
-			protected Bitmap decodeImage(Options options) {
-				try {
-					InputStream inputStream = imageView.getContext()
-							.getContentResolver()
-							.openInputStream(Uri.parse(uriString));
-					return BitmapFactory.decodeStream(inputStream, null,
-							options);
-
-				} catch (Exception e) {
-					Log.w("myc", "加载图片失败",e);
-					return null;
-				}
-			}
-		}.loadImage();
+		return new LoadImageUriFactory(Uri.parse(uriString)).loadImage();
 	}
 
 	/**
@@ -142,54 +113,7 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 		}.loadImage();
 	}
 
-	// /**
-	// * 加载图片文件
-	// *
-	// * @throws IOException
-	// */
-	// private Bitmap loadImageByStream(InputStream input) throws IOException {
-	// // 图片显示区域不可为空.
-	// if (imageView == null || imageView.getWidth() <= 0
-	// || imageView.getHeight() <= 0) {
-	// // 图片无法显示.
-	// return null;
-	// }
-	//
-	// // String path = params[0];
-	// if (input == null) {
-	// return null;
-	// }
-	// try {
-	// // 装载图片.
-	// Bitmap imageBitmap;
-	//
-	// Options options = new Options();
-	// // 预加载
-	// options.inJustDecodeBounds = true;
-	// // BitmapFactory.decodeFile(path, options);
-	// BitmapFactory.decodeStream(input, null, options);
-	// // =======================================================
-	// // 计算图片需要的缩放比例.
-	// if (options.outWidth <= 0 || options.outHeight <= 0) {
-	// // 图片无法显示.
-	// return null;
-	// }
-	//
-	// options.inSampleSize = Math.max(
-	// options.outWidth / imageView.getWidth(), options.outHeight
-	// / imageView.getHeight());
-	// Log.d("myc", "in sample size=" + options.inSampleSize);
-	// // options.inSampleSize = 2;
-	// // ========================================================
-	//
-	// // 正式加载
-	// options.inJustDecodeBounds = false;
-	// imageBitmap = BitmapFactory.decodeStream(input, null, options);
-	// return imageBitmap;
-	// } finally {
-	// input.close();
-	// }
-	// }
+	
 
 	@Override
 	protected void onPostExecute(Bitmap result) {
@@ -284,5 +208,37 @@ public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 		};
 
 	}
+	
+	/**
+	 * 采用Uri装载图片.
+	 * @author MaYichao
+	 *
+	 */
+	private class LoadImageUriFactory extends LoadImageFactory{
+		
+		Uri uri;
+		
+		public LoadImageUriFactory(final Uri uri) {
+			this.uri = uri;
+		}
+
+		@Override
+		protected Bitmap decodeImage(Options options) {
+			Log.d("myc", "Start load image:" + uri);
+			try {
+				InputStream inputStream = imageView.getContext()
+						.getContentResolver()
+						.openInputStream(uri);
+				return BitmapFactory.decodeStream(inputStream, null,
+						options);
+
+			} catch (Exception e) {
+				Log.w("myc", "加载图片失败",e);
+				return null;
+			}
+		}
+		
+	}
+	
 
 }
