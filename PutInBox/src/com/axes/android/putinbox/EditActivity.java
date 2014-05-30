@@ -15,9 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnAttachStateChangeListener;
 import android.view.View.OnClickListener;
-import android.view.View.OnLayoutChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -155,15 +153,9 @@ public class EditActivity extends ActionBarActivity {
 		super.onStart();
 	}
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
 	
 	@Override
 	protected void onPostResume() {
-		// TODO Auto-generated method stub
 		super.onPostResume();
 		if (box != null) {
 			// 编辑
