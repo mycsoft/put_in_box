@@ -8,6 +8,7 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -99,7 +100,8 @@ public class ListFrgt extends BaseBoxListFrgt {
 					// 保存位置.
 					box.setParent(Box.loadById(db, parentBoxId));
 				}
-				box.setPhotoPath(autoPhotoFile.getAbsolutePath());
+//				box.setPhotoPath(autoPhotoFile.getAbsolutePath());
+				box.setPhotoPath(Uri.fromFile(autoPhotoFile).toString());
 				box.save(db);
 				db.close();
 				// 继续连拍
